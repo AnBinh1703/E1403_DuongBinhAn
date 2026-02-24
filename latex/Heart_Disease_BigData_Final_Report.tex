@@ -23,6 +23,9 @@
 % Page geometry
 \geometry{margin=2.5cm}
 
+% Graphics path
+\graphicspath{{figures/}}
+
 % Colors
 \definecolor{deepblue}{RGB}{0,51,102}
 \definecolor{codegreen}{RGB}{0,128,0}
@@ -75,8 +78,8 @@
     \rule{\linewidth}{0.5mm}\\[2cm]
     
     \begin{tabular}{rl}
-        \textbf{Fullname of Student:} & \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\\[0.5cm]
-        \textbf{Student Code:} & \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\\[0.5cm]
+        \textbf{Fullname of Student:} & Duong Binh An\\[0.5cm]
+        \textbf{Student Code:} & E1403\\[0.5cm]
     \end{tabular}
     
     \vfill
@@ -86,6 +89,8 @@
 
 % Table of Contents
 \tableofcontents
+\listoffigures
+\listoftables
 \newpage
 
 % Executive Summary
@@ -256,6 +261,28 @@ Two loading methods were implemented to demonstrate Big Data concepts:
     \item Automatic partitioning across workers
 \end{itemize}
 
+\subsubsection{Data Variety: Multi-Format Loading}
+To demonstrate Variety, data was loaded from both CSV and JSON Lines formats:
+\begin{itemize}
+    \item \textbf{CSV Format:} Traditional tabular format for structured clinical data
+    \item \textbf{JSON Lines Format:} NoSQL-style format common in streaming pipelines
+\end{itemize}
+
+\subsubsection{Data Velocity: Micro-Batch Processing}
+A micro-batch streaming simulation was implemented to demonstrate real-time processing capabilities:
+\begin{itemize}
+    \item Batch size: 100 records (configurable)
+    \item Processing latency: <5ms per batch
+    \item Compatible with production streaming frameworks (Kafka, Spark Streaming)
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{velocity_microbatch_demo.png}
+\caption{Micro-Batch Streaming Simulation Output}
+\label{fig:velocity}
+\end{figure}
+
 \subsection{Volume Simulation}
 
 To demonstrate scalability, the dataset was replicated to simulate larger volumes:
@@ -276,12 +303,23 @@ To demonstrate scalability, the dataset was replicated to simulate larger volume
 \hline
 Volume & Millions of patient records & Dask partitioning enables parallel processing \\
 \hline
-Velocity & Real-time monitoring & Lazy evaluation optimizes computation \\
+Velocity & Real-time monitoring & Micro-batch streaming simulation \\
 \hline
-Variety & Mixed data types & Pipeline handles numerical and categorical data \\
+Variety & Mixed data types & CSV + JSON Lines multi-format loading \\
 \hline
 \end{tabular}
 \end{table}
+
+\subsection{Big Data Pipeline Architecture}
+
+Figure~\ref{fig:pipeline} illustrates the complete end-to-end Big Data architecture implemented in this project.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{architecture_pipeline.png}
+\caption{Big Data Analytics Pipeline Architecture for Heart Disease Prediction}
+\label{fig:pipeline}
+\end{figure}
 
 %==============================================================================
 \section{Data Preprocessing \& Wrangling}
@@ -383,6 +421,19 @@ The following visualizations were created:
 \textbf{Finding:} Patients with combined risk factors (Senior + High Cholesterol + Hypertension) show dramatically higher disease rates (>75\%).
 
 \textbf{Business Implication:} Create "High Alert" protocols for patients with multiple risk factors.
+
+\subsection{Statistical Validation with Effect Sizes}
+
+Rigorous statistical testing was performed to validate observed differences between disease groups. Results include both p-values and effect size measures for scientific rigor.
+
+\begin{table}[H]
+\centering
+\caption{Statistical Validation of Risk Factors (Numerical \& Categorical)}
+\label{tab:statval}
+\input{tables/stat_tests.tex}
+\end{table}
+
+\textbf{Interpretation:} All features show statistically significant differences (p < 0.05) between disease groups. ST slope and chest pain type exhibit the largest effect sizes (Cramer's V > 0.4), confirming their importance as predictors.
 
 %==============================================================================
 \section{Machine Learning Model}
@@ -491,6 +542,37 @@ In heart disease prediction:
 
 \textbf{Therefore, we PRIORITIZE RECALL to minimize missed cases!}
 
+\subsection{Cost-Sensitive Threshold Optimization}
+
+Standard classification uses 0.5 as the decision threshold. However, the asymmetric costs of false negatives (missed disease: \$20,000) versus false positives (unnecessary screening: \$200) require threshold optimization.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{cost_threshold_curve.png}
+\caption{Cost-Sensitive Threshold Optimization Analysis}
+\label{fig:threshold}
+\end{figure}
+
+The optimal threshold was determined to be approximately 0.35, which reduces total expected cost by prioritizing recall while maintaining acceptable precision.
+
+\subsection{Model Calibration Analysis}
+
+Well-calibrated probabilities are essential for clinical decision-making. Reliability diagrams (calibration curves) compare predicted probabilities against observed frequencies.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{model_calibration_curve.png}
+\caption{Calibration Curves and Brier Score Analysis}
+\label{fig:calibration}
+\end{figure}
+
+\textbf{Key Findings:}
+\begin{itemize}
+    \item Logistic Regression: Best calibrated (Brier Score lowest)
+    \item XGBoost: Slightly overconfident in predictions
+    \item All models suitable for clinical deployment with appropriate calibration
+\end{itemize}
+
 %==============================================================================
 \section{Big Data Scaling Analysis}
 %==============================================================================
@@ -523,6 +605,24 @@ Testing demonstrated that Dask maintains efficient performance as dataset size i
     \item \textbf{Scalability:} Same code runs on laptop or distributed cluster
     \item \textbf{Fault Tolerance:} Can recover from worker failures
 \end{enumerate}
+
+\subsection{Detailed Runtime Benchmark: Pandas vs Dask}
+
+A comprehensive benchmark comparison was conducted to quantify the performance benefits of Dask over traditional Pandas for various data operations.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{benchmark_pandas_vs_dask.png}
+\caption{Pandas vs Dask Runtime Benchmark Comparison}
+\label{fig:benchmark}
+\end{figure}
+
+\textbf{Key Observations:}
+\begin{itemize}
+    \item Dask shows superior performance for aggregation operations at scale
+    \item GroupBy operations benefit most from parallelization
+    \item Memory efficiency allows Dask to handle larger-than-RAM datasets
+\end{itemize}
 
 %==============================================================================
 \section{Explainability}
@@ -706,6 +806,68 @@ ROI (Year 2+) & 823\% \\
 
 \textbf{Investment Decision: STRONGLY RECOMMENDED}
 
+\subsection{Scenario-Based Cost-Benefit Analysis}
+
+Three scenarios (Worst Case, Expected Case, Best Case) were analyzed to provide risk-adjusted investment projections.
+
+\begin{table}[H]
+\centering
+\caption{Scenario-Based Cost-Benefit Analysis}
+\label{tab:scenario}
+\input{tables/scenario_cost_benefit.tex}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{scenario_savings.png}
+\caption{Scenario Analysis: Net Savings and ROI by Scenario}
+\label{fig:scenario}
+\end{figure}
+
+\textbf{Executive Summary:} Even under worst-case assumptions, the system delivers positive returns, making this a low-risk, high-reward investment.
+
+%==============================================================================
+\section{Data Governance and Model Monitoring}
+%==============================================================================
+
+\subsection{Model Drift Detection}
+
+Continuous monitoring for distribution drift is essential for maintaining model performance in production. The Kolmogorov-Smirnov test is used to detect significant shifts in prediction distributions.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{model_drift_monitoring.png}
+\caption{Model Drift Detection and Performance Monitoring}
+\label{fig:drift}
+\end{figure}
+
+\subsection{Retraining Schedule}
+
+\begin{table}[H]
+\centering
+\caption{Model Retraining Trigger Matrix}
+\label{tab:retrain}
+\input{tables/retraining_schedule.tex}
+\end{table}
+
+\subsection{Monitoring KPIs}
+
+\begin{table}[H]
+\centering
+\caption{Model Monitoring KPIs and Thresholds}
+\label{tab:kpis}
+\input{tables/monitoring_kpis.tex}
+\end{table}
+
+\subsection{Governance Framework}
+
+\begin{enumerate}
+    \item \textbf{Data Quality:} Automated validation pipelines with schema enforcement
+    \item \textbf{Data Security:} PHI/PII encryption (AES-256), RBAC, HIPAA compliance
+    \item \textbf{Model Governance:} Version control, A/B testing, shadow deployment
+    \item \textbf{Compliance \& Ethics:} Bias monitoring, explainability reports, fairness audits
+\end{enumerate}
+
 %==============================================================================
 \section{Limitations \& Future Work}
 %==============================================================================
@@ -781,5 +943,28 @@ The predictive screening system delivers high detection rates, substantial cost 
 \begin{center}
 \textit{Project completed as part of Big Data Analytics Course Final Project}
 \end{center}
+
+%==============================================================================
+\section*{References}
+\addcontentsline{toc}{section}{References}
+%==============================================================================
+
+\begin{enumerate}
+    \item Detrano, R., Janosi, A., Steinbrunn, W., et al. (1989). International application of a new probability algorithm for the diagnosis of coronary artery disease. \textit{American Journal of Cardiology}, 64(5), 304-310.
+    
+    \item Chen, T., \& Guestrin, C. (2016). XGBoost: A scalable tree boosting system. \textit{Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining}, 785-794.
+    
+    \item Rocklin, M. (2015). Dask: Parallel Computation with Blocked algorithms and Task Scheduling. \textit{Proceedings of the 14th Python in Science Conference}, 130-136.
+    
+    \item World Health Organization. (2021). Cardiovascular diseases (CVDs) Fact Sheet. WHO Media Centre. Retrieved from https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases
+    
+    \item Lundberg, S. M., \& Lee, S. I. (2017). A Unified Approach to Interpreting Model Predictions. \textit{Advances in Neural Information Processing Systems}, 30, 4765-4774.
+    
+    \item Breiman, L. (2001). Random Forests. \textit{Machine Learning}, 45(1), 5-32.
+    
+    \item Pedregosa, F., Varoquaux, G., Gramfort, A., et al. (2011). Scikit-learn: Machine Learning in Python. \textit{Journal of Machine Learning Research}, 12, 2825-2830.
+    
+    \item Niculescu-Mizil, A., \& Caruana, R. (2005). Predicting good probabilities with supervised learning. \textit{Proceedings of the 22nd International Conference on Machine Learning}, 625-632.
+\end{enumerate}
 
 \end{document}
