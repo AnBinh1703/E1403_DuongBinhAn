@@ -22,6 +22,7 @@
 
 % Page geometry
 \geometry{margin=2.5cm}
+\setlength{\headheight}{14.5pt}
 
 % Graphics path
 \graphicspath{{figures/}}
@@ -644,6 +645,24 @@ Top 10 most influential features from Random Forest analysis:
     \item Resting BP (4.1\%)
     \item Fasting blood sugar (2.4\%)
 \end{enumerate}
+
+\subsection{SHAP (SHapley Additive exPlanations) Analysis}
+
+Beyond traditional feature importance, SHAP values were computed using TreeExplainer on the best Random Forest model. SHAP provides a unified measure of feature contributions grounded in cooperative game theory.
+
+\textbf{Key Advantages of SHAP:}
+\begin{itemize}
+    \item \textbf{Local Interpretability:} Explains individual patient predictions, enabling clinicians to understand \emph{why} a specific patient was flagged.
+    \item \textbf{Global Interpretability:} Summary plots aggregate per-feature contributions across the entire cohort.
+    \item \textbf{Consistency:} SHAP satisfies desirable theoretical properties (additivity, symmetry, null player).
+\end{itemize}
+
+\textbf{SHAP Summary Findings:}
+\begin{itemize}
+    \item ST slope and chest pain type exhibit the largest mean absolute SHAP values, confirming their dominant role.
+    \item High values of oldpeak and exercise angina consistently push predictions toward higher disease probability.
+    \item Max heart rate shows a protective (negative SHAP) effect when high, aligning with medical literature.
+\end{itemize}
 
 \subsection{Medical Interpretation}
 
