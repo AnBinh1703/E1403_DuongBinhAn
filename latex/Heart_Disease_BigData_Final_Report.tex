@@ -139,7 +139,7 @@ Build a scalable machine learning system to predict heart disease risk using cli
     \item \textbf{Size:} 1,190 patient records, 12 clinical features
     \item \textbf{Characteristics:}
     \begin{itemize}
-        \item Near-balanced target (639 disease / 553 healthy $\approx$ 53.6\% / 46.4\%)
+        \item Near-balanced target (629 disease / 561 healthy $\approx$ 52.9\% / 47.1\%)
         \item Mix of numerical (5) and categorical (7) features
         \item 172 cholesterol values recorded as 0 (treated as missing)
     \end{itemize}
@@ -205,7 +205,7 @@ Both CSV and JSON Lines formats were loaded and validated. Schema comparison con
 \hline
 Volume & Millions of patient records & Dask partitioning; tested up to 595,000 rows (500$\times$) \\
 \hline
-Velocity & Real-time patient monitoring & Micro-batch streaming simulation (152,921 rec/sec) \\
+Velocity & Real-time patient monitoring & Micro-batch streaming simulation (158,243 rec/sec) \\
 \hline
 Variety & Mixed data formats & CSV + JSON Lines multi-format ingestion \\
 \hline
@@ -226,7 +226,7 @@ Variety & Mixed data formats & CSV + JSON Lines multi-format ingestion \\
 
 \subsection{Missing Value Handling}
 
-172 cholesterol values (14.45\%) were recorded as 0, which is biologically impossible. These were treated as missing data and imputed using \textbf{median imputation} (median = 223 mg/dL). Median was chosen over mean to avoid distortion from outliers in the cholesterol distribution.
+172 cholesterol values (14.45\%) were recorded as 0, which is biologically impossible. These were treated as missing data and imputed using \textbf{median imputation} (median = 240 mg/dL). Median was chosen over mean to avoid distortion from outliers in the cholesterol distribution.
 
 \subsection{Outlier Detection and Treatment}
 
@@ -237,12 +237,12 @@ Two complementary methods were applied:
     \item \textbf{Z-Score Method:} Flags values with $|z| > 3$
 \end{enumerate}
 
-\textbf{Treatment:} Winsorization (capping at 5th/95th percentiles) was applied rather than deletion, preserving all 1,190 patient records while mitigating extreme value influence.
+\textbf{Treatment:} Winsorization (capping at 1st/99th percentiles) was applied rather than deletion, preserving all 1,190 patient records while mitigating extreme value influence.
 
 \subsection{Scaling and Encoding}
 
 \begin{itemize}
-    \item \textbf{StandardScaler:} Applied to 8 numerical features (zero mean, unit variance)
+    \item \textbf{StandardScaler:} Applied to 15 numerical features (zero mean, unit variance)
     \item \textbf{One-Hot Encoding:} Applied to 3 categorical features (Age\_Group, BP\_Category, Cholesterol\_Risk\_Level)
     \item \textbf{Final feature count:} 22 features after transformation
 \end{itemize}
@@ -275,8 +275,8 @@ The following visualizations were produced:
 \subsection{Initial Insights}
 
 \begin{enumerate}
-    \item \textbf{ST slope} shows the strongest correlation with heart disease ($r = 0.51$), consistent with known clinical significance in indicating myocardial ischemia.
-    \item \textbf{Chest pain type} ($r = 0.43$) and \textbf{oldpeak} ($r = 0.40$) are also strongly correlated with the target.
+    \item \textbf{ST slope} shows the strongest correlation with heart disease ($r = 0.506$), consistent with known clinical significance in indicating myocardial ischemia.
+    \item \textbf{Exercise angina} ($r = 0.481$), \textbf{chest pain type} ($r = 0.460$), and \textbf{oldpeak} ($r = 0.416$) are also strongly correlated with the target.
     \item Most independent features show low multicollinearity ($|r| < 0.5$), favorable for model stability.
     \item Senior patients (60+) have a \textbf{69.1\%} disease rate vs.\ 32.6\% for young patients ($<$40).
     \item High cholesterol ($>$240 mg/dL) patients show \textbf{61.3\%} disease rate vs.\ 38.4\% for normal cholesterol.
@@ -383,9 +383,9 @@ Cholesterol\_Risk\_Level & Binary flag: cholesterol $>$ 240 mg/dL \\
 \hline
 \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{ROC-AUC} \\
 \hline
-Logistic Regression & 0.8487 & 0.8631 & 0.8492 & 0.8654 & 0.9112 \\
+Logistic Regression & 0.8487 & 0.8629 & 0.8492 & 0.8560 & 0.9112 \\
 Random Forest (Initial) & 0.9244 & 0.9355 & 0.9206 & 0.9280 & 0.9664 \\
-XGBoost (Initial) & 0.9202 & 0.9286 & 0.9127 & 0.9260 & 0.9636 \\
+XGBoost (Initial) & 0.9202 & 0.9421 & 0.9048 & 0.9231 & 0.9636 \\
 Random Forest (Tuned) & 0.9286 & 0.9431 & 0.9206 & 0.9317 & 0.9725 \\
 XGBoost (Tuned) & 0.9286 & 0.9504 & 0.9127 & 0.9312 & 0.9641 \\
 \hline
@@ -403,9 +403,9 @@ XGBoost (Tuned) & 0.9286 & 0.9504 & 0.9127 & 0.9312 & 0.9641 \\
 \hline
 \textbf{Model} & \textbf{CV Accuracy} & \textbf{CV ROC-AUC} & \textbf{CV Recall} \\
 \hline
-Logistic Regression & 0.8498 $\pm$ 0.0193 & 0.9131 $\pm$ 0.0163 & 0.8730 $\pm$ 0.0248 \\
-Random Forest & 0.9117 $\pm$ 0.0192 & 0.9614 $\pm$ 0.0102 & 0.9112 $\pm$ 0.0150 \\
-XGBoost & 0.9227 $\pm$ 0.0142 & 0.9619 $\pm$ 0.0059 & 0.9300 $\pm$ 0.0202 \\
+Logistic Regression & 0.8361 $\pm$ 0.0197 & 0.9041 $\pm$ 0.0110 & 0.8330 $\pm$ 0.0212 \\
+Random Forest & 0.9193 $\pm$ 0.0111 & 0.9589 $\pm$ 0.0064 & 0.9316 $\pm$ 0.0186 \\
+XGBoost & 0.9227 $\pm$ 0.0142 & 0.9619 $\pm$ 0.0059 & 0.9300 $\pm$ 0.0235 \\
 \hline
 \end{tabular}
 \end{table}
