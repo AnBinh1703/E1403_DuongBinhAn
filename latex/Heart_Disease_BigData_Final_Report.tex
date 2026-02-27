@@ -65,147 +65,85 @@
 
 \begin{document}
 
-% Title Page
+% ============================================================================
+% TITLE PAGE
+% ============================================================================
 \begin{titlepage}
     \centering
     \vspace*{2cm}
-    
+
     {\Huge\bfseries FINAL PROJECT}\\[0.5cm]
     {\LARGE Big Data Analytics Course}\\[2cm]
-    
+
     \rule{\linewidth}{0.5mm}\\[0.5cm]
     {\huge\bfseries Heart Disease Risk Prediction\\[0.3cm]
-    using Big Data Architecture}\\[0.5cm]
+    using Big Data Analytics}\\[0.5cm]
     \rule{\linewidth}{0.5mm}\\[2cm]
-    
+
     \begin{tabular}{rl}
         \textbf{Fullname of Student:} & Duong Binh An\\[0.5cm]
         \textbf{Student Code:} & E1403\\[0.5cm]
     \end{tabular}
-    
+
     \vfill
-    
+
     {\large \today}
 \end{titlepage}
 
-% Table of Contents
+% ============================================================================
+% TABLE OF CONTENTS
+% ============================================================================
 \tableofcontents
 \listoffigures
 \listoftables
 \newpage
 
-% Executive Summary
-\section*{Executive Summary}
-\addcontentsline{toc}{section}{Executive Summary}
-
-This comprehensive Big Data Analytics project develops a scalable machine learning system for predicting heart disease risk using clinical patient data. The solution leverages Dask for distributed computing to handle large-scale healthcare data while implementing multiple classification algorithms with thorough evaluation.
-
-\textbf{Key Achievements:}
-\begin{itemize}
-    \item Processed 1,192 patient records with demonstrated scalability to 600,000+ records
-    \item Achieved high recall rates (>85\%) critical for medical screening applications
-    \item Identified key risk factors for targeted clinical interventions
-    \item Demonstrated ROI of 300\%+ with payback period under 6 months
-    \item Provided actionable CEO-level recommendations for system deployment
-\end{itemize}
-
-\newpage
-
-%==============================================================================
+% ============================================================================
+% 1. BUSINESS CONTEXT & PROBLEM DEFINITION
+% ============================================================================
 \section{Business Context \& Problem Definition}
-%==============================================================================
 
 \subsection{Background}
 
-\textbf{Healthcare Organization Context:} This project simulates a large hospital network (HealthCare Analytics Corp) serving millions of patients annually across multiple facilities. The organization faces critical challenges in cardiovascular disease management.
+Cardiovascular disease (CVD) is the leading cause of death globally, responsible for approximately 17.9 million deaths annually (WHO, 2021). Early detection of heart disease can reduce treatment costs by up to 60\% and significantly improve patient survival rates. However, traditional manual screening is time-consuming and not scalable for large patient populations. Hospitals generate massive volumes of patient data daily that remain underutilized for predictive analytics.
 
-\subsubsection{Key Business Context}
-
-\begin{itemize}
-    \item \textbf{Cardiovascular Disease (CVD)} is the leading cause of death globally, responsible for approximately 17.9 million deaths annually (WHO, 2021)
-    \item \textbf{Early detection} can reduce treatment costs by up to 60\% and significantly improve patient survival rates
-    \item Traditional manual screening is time-consuming and not scalable for large patient populations
-    \item Hospitals generate massive volumes of patient data daily that remain underutilized for predictive analytics
-\end{itemize}
-
-\subsubsection{Why Big Data Architecture is Essential}
-
-\begin{table}[H]
-\centering
-\caption{Big Data Characteristics in Healthcare}
-\begin{tabular}{|l|l|}
-\hline
-\textbf{Characteristic} & \textbf{Healthcare Application} \\
-\hline
-Volume & Hospital networks generate terabytes of patient records annually \\
-Velocity & Real-time patient monitoring requires rapid data processing \\
-Variety & Clinical data includes numerical, categorical, and unstructured data \\
-Veracity & Medical data requires high accuracy and reliability standards \\
-\hline
-\end{tabular}
-\end{table}
+This project addresses the need for an automated, scalable machine learning system that can identify patients at high risk of heart disease using routinely collected clinical data. The system must be capable of handling Big Data volumes encountered in hospital networks serving millions of patients.
 
 \subsection{Problem Statement}
 
-\textbf{Objective:} Build a scalable machine learning system to predict whether a patient is at risk of heart disease using clinical features from electronic health records.
+Build a scalable machine learning system to predict heart disease risk using clinical patient features from electronic health records.
 
-\begin{table}[H]
-\centering
-\caption{Technical Specification}
-\begin{tabular}{|l|l|}
-\hline
-\textbf{Component} & \textbf{Description} \\
-\hline
-Input & Patient clinical features (age, cholesterol, blood pressure, etc.) \\
-Target & Heart disease label (0 = No Disease, 1 = Disease) \\
-Task Type & Binary Classification \\
-Scale Requirement & Must handle millions of patient records \\
-Latency Requirement & Predictions within seconds for clinical use \\
-\hline
-\end{tabular}
-\end{table}
-
-\subsection{Business Objectives}
-
-\begin{enumerate}
-    \item \textbf{Reduce Emergency Hospitalization}
-    \begin{itemize}
-        \item Target: 20\% reduction in emergency cardiac admissions
-        \item Method: Early identification of at-risk patients for preventive monitoring
-    \end{itemize}
-    
-    \item \textbf{Reduce Long-term Treatment Costs}
-    \begin{itemize}
-        \item Target: \$5M annual savings across hospital network
-        \item Method: Shift from reactive to preventive care model
-    \end{itemize}
-    
-    \item \textbf{Enable Preventive Care Strategy}
-    \begin{itemize}
-        \item Target: Implement risk-based screening protocols
-        \item Method: Automated patient risk scoring integrated into EHR systems
-    \end{itemize}
-    
-    \item \textbf{Improve Patient Survival Rate}
-    \begin{itemize}
-        \item Target: 15\% improvement in 5-year survival for high-risk patients
-        \item Method: Earlier intervention and continuous monitoring programs
-    \end{itemize}
-\end{enumerate}
-
-%==============================================================================
-\section{Dataset Description}
-%==============================================================================
-
-\subsection{Source Information}
 \begin{itemize}
-    \item \textbf{Source:} Kaggle Heart Disease Dataset (Combined from Statlog, Cleveland, and Hungary datasets)
-    \item \textbf{Dataset:} heart\_statlog\_cleveland\_hungary\_final.csv
-    \item \textbf{Domain:} Healthcare / Cardiovascular Medicine
-    \item \textbf{Size:} 1,192 patient records, 12 features
+    \item \textbf{Input:} Patient clinical features (age, cholesterol, blood pressure, ECG results, exercise test results, and 7 engineered features)
+    \item \textbf{Target:} Heart disease label (0 = No Disease, 1 = Disease)
+    \item \textbf{Task type:} Binary classification (near-balanced dataset: 53\% disease, 47\% healthy)
 \end{itemize}
 
-\subsection{Feature Description}
+\subsection{Business Objective}
+
+\begin{enumerate}
+    \item Reduce emergency cardiac hospitalizations through early identification of at-risk patients
+    \item Minimize false negatives (missed diagnoses) which carry high medical and financial costs
+    \item Enable preventive care strategies by integrating automated risk scoring into hospital workflows
+    \item Demonstrate scalability using Dask-based Big Data architecture for production deployment
+\end{enumerate}
+
+% ============================================================================
+% 2. DATASET DESCRIPTION
+% ============================================================================
+\section{Dataset Description}
+
+\begin{itemize}
+    \item \textbf{Source:} Kaggle -- Heart Disease Dataset (combined from Cleveland, Hungary, and Statlog datasets)
+    \item \textbf{File:} \texttt{heart\_statlog\_cleveland\_hungary\_final.csv} + \texttt{.jsonl}
+    \item \textbf{Size:} 1,190 patient records, 12 clinical features
+    \item \textbf{Characteristics:}
+    \begin{itemize}
+        \item Near-balanced target (639 disease / 553 healthy $\approx$ 53.6\% / 46.4\%)
+        \item Mix of numerical (5) and categorical (7) features
+        \item 172 cholesterol values recorded as 0 (treated as missing)
+    \end{itemize}
+\end{itemize}
 
 \begin{longtable}{|l|l|l|}
 \caption{Dataset Features and Descriptions} \\
@@ -219,289 +157,218 @@ Latency Requirement & Predictions within seconds for clinical use \\
 \endhead
 age & Age of the patient in years & Numerical \\
 sex & Gender (1 = Male, 0 = Female) & Categorical \\
-chest pain type & Type of chest pain (1-4 scale) & Categorical \\
+chest pain type & Type of chest pain (1--4 scale) & Categorical \\
 resting bp s & Resting blood pressure (mm Hg) & Numerical \\
-cholesterol & Serum cholesterol (mg/dl) & Numerical \\
-fasting blood sugar & Fasting blood sugar > 120 mg/dl & Categorical \\
-resting ecg & Resting ECG results (0-2) & Categorical \\
+cholesterol & Serum cholesterol (mg/dL) & Numerical \\
+fasting blood sugar & Fasting blood sugar $>$ 120 mg/dL & Categorical \\
+resting ecg & Resting ECG results (0--2) & Categorical \\
 max heart rate & Maximum heart rate achieved & Numerical \\
-exercise angina & Exercise induced angina & Categorical \\
+exercise angina & Exercise-induced angina (0/1) & Categorical \\
 oldpeak & ST depression induced by exercise & Numerical \\
 ST slope & Slope of peak exercise ST segment & Categorical \\
 target & Heart disease diagnosis (0/1) & Target \\
 \hline
 \end{longtable}
 
-\subsection{Target Distribution}
-\begin{itemize}
-    \item No Disease (0): 553 patients (46.4\%)
-    \item Disease (1): 639 patients (53.6\%)
-    \item Class Balance: Slightly balanced dataset (no severe imbalance)
-\end{itemize}
-
-%==============================================================================
+% ============================================================================
+% 3. DATA INGESTION & BIG DATA LOADING
+% ============================================================================
 \section{Data Ingestion \& Big Data Loading}
-%==============================================================================
 
 \subsection{Loading Methods}
 
-Two loading methods were implemented to demonstrate Big Data concepts:
+Two loading approaches were implemented to demonstrate Big Data concepts:
 
-\subsubsection{Pandas (Baseline)}
 \begin{itemize}
-    \item Traditional in-memory loading
-    \item Suitable for datasets fitting in RAM
-    \item Single-threaded processing
+    \item \textbf{Pandas (baseline):} Traditional single-threaded, in-memory loading.
+    \item \textbf{Dask DataFrame (Big Data):} Parallel, lazy-evaluation distributed loading. Handles datasets larger than RAM through automatic partitioning.
 \end{itemize}
 
-\subsubsection{Dask DataFrame (Big Data Approach)}
+\subsection{Schema Summary}
+
 \begin{itemize}
-    \item Parallel and distributed loading
-    \item Lazy evaluation (operations deferred until needed)
-    \item Handles datasets larger than available RAM
-    \item Automatic partitioning across workers
+    \item Rows: 1,190 \quad Columns: 12
+    \item Data types: 5 \texttt{int64}, 5 \texttt{float64}, 2 mixed
+    \item Missing values: 172 cholesterol values coded as 0 (14.45\% of records)
 \end{itemize}
 
-\subsubsection{Data Variety: Multi-Format Loading}
-To demonstrate Variety, data was loaded from both CSV and JSON Lines formats:
-\begin{itemize}
-    \item \textbf{CSV Format:} Traditional tabular format for structured clinical data
-    \item \textbf{JSON Lines Format:} NoSQL-style format common in streaming pipelines
-\end{itemize}
-
-\subsubsection{Data Velocity: Micro-Batch Processing}
-A micro-batch streaming simulation was implemented to demonstrate real-time processing capabilities:
-\begin{itemize}
-    \item Batch size: 100 records (configurable)
-    \item Processing latency: <5ms per batch
-    \item Compatible with production streaming frameworks (Kafka, Spark Streaming)
-\end{itemize}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.85\textwidth]{velocity_microbatch_demo.png}
-\caption{Micro-Batch Streaming Simulation Output}
-\label{fig:velocity}
-\end{figure}
-
-\subsection{Volume Simulation}
-
-To demonstrate scalability, the dataset was replicated to simulate larger volumes:
-\begin{itemize}
-    \item Original: 1,192 rows
-    \item Scaled: Up to 119,200 rows (100x)
-    \item Extended testing: 596,000 rows (500x)
-\end{itemize}
+Both CSV and JSON Lines formats were loaded and validated. Schema comparison confirmed identical data types and mean values across formats, ensuring data integrity.
 
 \subsection{Big Data Characteristics Addressed}
 
 \begin{table}[H]
 \centering
 \caption{Solution Mapping to 3 V's of Big Data}
-\begin{tabular}{|l|p{5cm}|p{6cm}|}
+\begin{tabular}{|l|p{4.5cm}|p{6cm}|}
 \hline
-\textbf{Characteristic} & \textbf{Challenge} & \textbf{Our Solution} \\
+\textbf{V} & \textbf{Challenge} & \textbf{Solution} \\
 \hline
-Volume & Millions of patient records & Dask partitioning enables parallel processing \\
+Volume & Millions of patient records & Dask partitioning; tested up to 595,000 rows (500$\times$) \\
 \hline
-Velocity & Real-time monitoring & Micro-batch streaming simulation \\
+Velocity & Real-time patient monitoring & Micro-batch streaming simulation (152,921 rec/sec) \\
 \hline
-Variety & Mixed data types & CSV + JSON Lines multi-format loading \\
+Variety & Mixed data formats & CSV + JSON Lines multi-format ingestion \\
 \hline
 \end{tabular}
 \end{table}
-
-\subsection{Big Data Pipeline Architecture}
-
-Figure~\ref{fig:pipeline} illustrates the complete end-to-end Big Data architecture implemented in this project.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{architecture_pipeline.png}
-\caption{Big Data Analytics Pipeline Architecture for Heart Disease Prediction}
+\includegraphics[width=0.85\textwidth]{architecture_pipeline.png}
+\caption{Big Data Analytics Pipeline Architecture}
 \label{fig:pipeline}
 \end{figure}
 
-%==============================================================================
-\section{Data Preprocessing \& Wrangling}
-%==============================================================================
+% ============================================================================
+% 4. DATA PREPROCESSING
+% ============================================================================
+\section{Data Preprocessing}
 
 \subsection{Missing Value Handling}
 
-\textbf{Strategy Applied:}
-\begin{itemize}
-    \item Numeric Features (Normal Distribution): Mean imputation
-    \item Numeric Features (Skewed): Median imputation
-    \item Categorical Features: Mode imputation
-\end{itemize}
+172 cholesterol values (14.45\%) were recorded as 0, which is biologically impossible. These were treated as missing data and imputed using \textbf{median imputation} (median = 223 mg/dL). Median was chosen over mean to avoid distortion from outliers in the cholesterol distribution.
 
-\textbf{Medical Rationale:} In clinical settings, dropping records with missing values loses valuable patient information. Imputation allows retention of all patients while using statistically sound estimates.
+\subsection{Outlier Detection and Treatment}
 
-\subsection{Outlier Detection and Handling}
+Two complementary methods were applied:
 
-\textbf{Methods Used:}
 \begin{enumerate}
-    \item \textbf{IQR Method:} Identifies outliers outside Q1 - 1.5×IQR and Q3 + 1.5×IQR bounds
-    \item \textbf{Z-Score Method:} Flags values more than 3 standard deviations from mean
+    \item \textbf{IQR Method:} Flags values outside $[Q_1 - 1.5 \times \text{IQR},\; Q_3 + 1.5 \times \text{IQR}]$
+    \item \textbf{Z-Score Method:} Flags values with $|z| > 3$
 \end{enumerate}
 
-\textbf{Treatment:} Winsorization (capping at 1st and 99th percentiles) was applied to preserve all patient records while mitigating extreme value influence.
-
-\subsection{Feature Engineering}
-
-Seven new features were created to capture medical risk factors:
-
-\begin{table}[H]
-\centering
-\caption{Engineered Features}
-\begin{tabular}{|l|p{8cm}|}
-\hline
-\textbf{Feature} & \textbf{Medical Significance} \\
-\hline
-Age\_Group & Categorizes patients into risk-relevant age brackets \\
-Cholesterol\_Risk\_Level & WHO-based cholesterol risk categories \\
-BP\_Category & Blood pressure classification (JNC guidelines) \\
-Heart\_Risk\_Index & Composite score combining multiple risk factors \\
-Cholesterol\_to\_Age\_Ratio & Relative cholesterol burden by age \\
-Age\_Chol\_Interaction & Multiplicative interaction capturing combined effect \\
-Max\_HR\_Reserve & Difference from age-predicted maximum heart rate \\
-\hline
-\end{tabular}
-\end{table}
+\textbf{Treatment:} Winsorization (capping at 5th/95th percentiles) was applied rather than deletion, preserving all 1,190 patient records while mitigating extreme value influence.
 
 \subsection{Scaling and Encoding}
 
 \begin{itemize}
-    \item \textbf{StandardScaler:} Applied to all numerical features (zero mean, unit variance)
-    \item \textbf{One-Hot Encoding:} Applied to categorical variables
-    \item \textbf{Final Feature Count:} 19 features after transformation
+    \item \textbf{StandardScaler:} Applied to 8 numerical features (zero mean, unit variance)
+    \item \textbf{One-Hot Encoding:} Applied to 3 categorical features (Age\_Group, BP\_Category, Cholesterol\_Risk\_Level)
+    \item \textbf{Final feature count:} 22 features after transformation
 \end{itemize}
 
-%==============================================================================
-\section{Exploratory Data Analysis (EDA)}
-%==============================================================================
+\subsection{Train/Test Split}
 
-\subsection{Descriptive Statistics}
-
-Key statistics for numerical features:
 \begin{itemize}
-    \item Age: Mean = 53.5 years, Range = 28-77 years
-    \item Cholesterol: Mean = 245 mg/dL, significant variation observed
-    \item Max Heart Rate: Mean = 137 bpm, inversely related to disease
-    \item Resting BP: Mean = 132 mmHg, elevated in many patients
+    \item Split ratio: 80/20 (stratified to preserve class distribution)
+    \item Training samples: 952 \quad Test samples: 238
 \end{itemize}
+
+% ============================================================================
+% 5. EXPLORATORY DATA ANALYSIS (EDA)
+% ============================================================================
+\section{Exploratory Data Analysis (EDA)}
 
 \subsection{Key Visualizations}
 
-The following visualizations were created:
+The following visualizations were produced:
+
 \begin{enumerate}
-    \item Target distribution (bar and pie charts)
+    \item Target distribution (bar chart and pie chart)
     \item Age distribution by heart disease status
-    \item Cholesterol distribution comparison
-    \item Correlation matrix heatmap
-    \item Boxplots for key clinical variables
-    \item Feature combinations vs disease rate
+    \item Cholesterol distribution comparison (disease vs.\ healthy)
+    \item $22 \times 22$ correlation matrix heatmap (full square + lower triangle)
+    \item Boxplots for key clinical variables by disease group
+    \item Feature-pair bar charts for top correlated features
 \end{enumerate}
 
-\subsection{Business Questions Answered}
+\subsection{Initial Insights}
 
-\subsubsection{Question 1: Which age group has highest heart disease probability?}
+\begin{enumerate}
+    \item \textbf{ST slope} shows the strongest correlation with heart disease ($r = 0.51$), consistent with known clinical significance in indicating myocardial ischemia.
+    \item \textbf{Chest pain type} ($r = 0.43$) and \textbf{oldpeak} ($r = 0.40$) are also strongly correlated with the target.
+    \item Most independent features show low multicollinearity ($|r| < 0.5$), favorable for model stability.
+    \item Senior patients (60+) have a \textbf{69.1\%} disease rate vs.\ 32.6\% for young patients ($<$40).
+    \item High cholesterol ($>$240 mg/dL) patients show \textbf{61.3\%} disease rate vs.\ 38.4\% for normal cholesterol.
+\end{enumerate}
 
-\textbf{Finding:} Senior patients (60+) have the highest disease rate at approximately 65\%, compared to 35\% in young patients (<40).
+% ============================================================================
+% 6. FEATURE ENGINEERING
+% ============================================================================
+\section{Feature Engineering}
 
-\textbf{Business Implication:} Target senior patients for mandatory cardiovascular screening programs.
-
-\subsubsection{Question 2: Does high cholesterol significantly increase risk?}
-
-\textbf{Finding:} Statistical analysis confirms significant difference in cholesterol levels between disease groups (p < 0.05).
-
-\textbf{Business Implication:} Implement cholesterol management programs and screening for patients >200 mg/dL.
-
-\subsubsection{Question 3: Which feature combinations increase risk most?}
-
-\textbf{Finding:} Patients with combined risk factors (Senior + High Cholesterol + Hypertension) show dramatically higher disease rates (>75\%).
-
-\textbf{Business Implication:} Create "High Alert" protocols for patients with multiple risk factors.
-
-\subsection{Statistical Validation with Effect Sizes}
-
-Rigorous statistical testing was performed to validate observed differences between disease groups. Results include both p-values and effect size measures for scientific rigor.
+Seven new features were created based on medical domain knowledge:
 
 \begin{table}[H]
 \centering
-\caption{Statistical Validation of Risk Factors (Numerical \& Categorical)}
-\label{tab:statval}
-\input{tables/stat_tests.tex}
+\caption{Engineered Features and Their Medical Significance}
+\begin{tabular}{|l|p{8.5cm}|}
+\hline
+\textbf{Feature} & \textbf{Significance} \\
+\hline
+Age\_Group & Categorizes patients (Young/Middle/Senior) per cardiac risk brackets \\
+BP\_Category & Blood pressure classification (Normal, High Stage 1, High Stage 2) \\
+Heart\_Risk\_Index & Composite score $= \text{age} \times \text{cholesterol} \times \text{resting\_bp} / 100{,}000$. Became the \textbf{\#1 predictor} in Random Forest (importance = 0.135) \\
+Cholesterol\_to\_Age\_Ratio & Cholesterol / Age -- relative cholesterol burden \\
+Age\_Chol\_Interaction & $\text{age} \times \text{cholesterol}$ -- captures synergistic risk \\
+Max\_HR\_Reserve & $220 - \text{age} - \text{max\_heart\_rate}$ -- cardiac fitness indicator \\
+Cholesterol\_Risk\_Level & Binary flag: cholesterol $>$ 240 mg/dL \\
+\hline
+\end{tabular}
 \end{table}
 
-\textbf{Interpretation:} All features show statistically significant differences (p < 0.05) between disease groups. ST slope and chest pain type exhibit the largest effect sizes (Cramer's V > 0.4), confirming their importance as predictors.
+\textbf{Feature selection:} All 22 features were retained for modeling. The engineered \texttt{Heart\_Risk\_Index} proved to be the single most predictive feature in Random Forest, validating the domain-driven approach. Both Random Forest and XGBoost importance rankings were used to confirm feature relevance (no redundant features identified).
 
-%==============================================================================
-\section{Machine Learning Model}
-%==============================================================================
+% ============================================================================
+% 7. MACHINE LEARNING MODELS
+% ============================================================================
+\section{Machine Learning Models}
 
-\subsection{Train/Test Split}
+\subsection{Baseline: Logistic Regression}
+
 \begin{itemize}
-    \item Split Ratio: 80\% training, 20\% testing
-    \item Method: Stratified split to preserve class distribution
-    \item Training samples: 953
-    \item Test samples: 239
+    \item Simple, interpretable linear classifier with \texttt{class\_weight=balanced}
+    \item $C = 1.0$, \texttt{max\_iter} = 1000, \texttt{solver} = lbfgs
+    \item Serves as benchmark for ensemble methods
 \end{itemize}
 
-\subsection{Models Implemented}
+\subsection{Advanced Model 1: Random Forest}
 
-\subsubsection{Baseline Model: Logistic Regression}
 \begin{itemize}
-    \item Simple, interpretable baseline
-    \item Class weighting applied for balance
-    \item Serves as benchmark for advanced models
+    \item Ensemble of 100 decision trees (\texttt{n\_estimators=100})
+    \item Handles non-linear feature interactions natively
+    \item Provides built-in feature importance via Gini impurity
 \end{itemize}
 
-\subsubsection{Advanced Model 1: Random Forest}
+\subsection{Advanced Model 2: XGBoost}
+
 \begin{itemize}
-    \item Ensemble of decision trees
-    \item Handles non-linear relationships
-    \item Provides feature importance rankings
+    \item Gradient boosting with \texttt{scale\_pos\_weight} $= 0.89$ for class balance
+    \item $\texttt{learning\_rate} = 0.1$, $\texttt{max\_depth} = 6$, $\texttt{n\_estimators} = 100$
+    \item Built-in L1/L2 regularization to prevent overfitting
 \end{itemize}
-
-\subsubsection{Advanced Model 2: XGBoost}
-\begin{itemize}
-    \item Gradient boosting implementation
-    \item State-of-the-art performance
-    \item Built-in regularization
-\end{itemize}
-
-\subsection{Cross-Validation}
-
-Stratified K-Fold cross-validation (k=5) was applied to all models to ensure robust performance estimation and prevent overfitting.
 
 \subsection{Hyperparameter Tuning}
 
-\textbf{Random Forest Parameters Tuned:}
-\begin{itemize}
-    \item n\_estimators: [50, 100, 200]
-    \item max\_depth: [5, 10, 15, None]
-    \item min\_samples\_split: [2, 5, 10]
-\end{itemize}
+\texttt{RandomizedSearchCV} (20 iterations, 3-fold stratified CV, scoring = recall) was applied to both Random Forest and XGBoost:
 
-\textbf{XGBoost Parameters Tuned:}
-\begin{itemize}
-    \item learning\_rate: [0.01, 0.1, 0.2]
-    \item max\_depth: [3, 6, 9]
-    \item n\_estimators: [50, 100, 200]
-    \item subsample: [0.7, 0.8, 0.9]
-\end{itemize}
+\begin{table}[H]
+\centering
+\caption{Hyperparameter Search Space}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Random Forest} & \textbf{XGBoost} \\
+\hline
+\texttt{n\_estimators}: [50, 100, 200, 300] & \texttt{n\_estimators}: [50, 100, 200, 300] \\
+\texttt{max\_depth}: [3, 5, 7, 10, 15, None] & \texttt{max\_depth}: [3, 5, 7, 10] \\
+\texttt{min\_samples\_split}: [2, 5, 10] & \texttt{learning\_rate}: [0.01, 0.05, 0.1, 0.2] \\
+\texttt{min\_samples\_leaf}: [1, 2, 4] & \texttt{subsample}: [0.6, 0.7, 0.8, 0.9, 1.0] \\
+\texttt{max\_features}: [sqrt, log2, None] & \texttt{colsample\_bytree}: [0.6, 0.7, 0.8, 0.9, 1.0] \\
+\hline
+\end{tabular}
+\end{table}
 
-%==============================================================================
+% ============================================================================
+% 8. MODEL EVALUATION
+% ============================================================================
 \section{Model Evaluation}
-%==============================================================================
 
 \subsection{Metrics Used}
 
 \begin{itemize}
     \item \textbf{Accuracy:} Overall correct predictions
-    \item \textbf{Precision:} Positive predictive value
-    \item \textbf{Recall:} Sensitivity (critical for medical screening)
+    \item \textbf{Precision:} Positive predictive value (avoids false alarms)
+    \item \textbf{Recall (Sensitivity):} Fraction of actual disease cases correctly identified -- \textbf{the most critical metric} for medical screening
     \item \textbf{F1-Score:} Harmonic mean of precision and recall
     \item \textbf{ROC-AUC:} Area under receiver operating characteristic curve
 \end{itemize}
@@ -510,263 +377,239 @@ Stratified K-Fold cross-validation (k=5) was applied to all models to ensure rob
 
 \begin{table}[H]
 \centering
-\caption{Model Performance Comparison}
+\caption{Model Performance Comparison (Test Set, $n = 238$)}
+\label{tab:results}
 \begin{tabular}{|l|c|c|c|c|c|}
 \hline
 \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{ROC-AUC} \\
 \hline
-Logistic Regression & 0.84 & 0.85 & 0.87 & 0.86 & 0.91 \\
-Random Forest (Tuned) & 0.87 & 0.88 & 0.89 & 0.88 & 0.93 \\
-XGBoost (Tuned) & 0.88 & 0.89 & 0.90 & 0.89 & 0.94 \\
+Logistic Regression & 0.8487 & 0.8631 & 0.8492 & 0.8654 & 0.9112 \\
+Random Forest (Initial) & 0.9244 & 0.9355 & 0.9206 & 0.9280 & 0.9664 \\
+XGBoost (Initial) & 0.9202 & 0.9286 & 0.9127 & 0.9260 & 0.9636 \\
+Random Forest (Tuned) & 0.9286 & 0.9431 & 0.9206 & 0.9317 & 0.9725 \\
+XGBoost (Tuned) & 0.9286 & 0.9504 & 0.9127 & 0.9312 & 0.9641 \\
 \hline
 \end{tabular}
 \end{table}
 
-\subsection{Why Recall is Critical}
+\textbf{Best model by Recall:} Random Forest (Initial) with Recall = \textbf{0.9206} -- correctly identifies 92\% of actual heart disease cases.
 
-In heart disease prediction:
+\subsection{Cross-Validation Results (5-Fold Stratified)}
+
+\begin{table}[H]
+\centering
+\caption{Cross-Validation Performance (Mean $\pm$ Std)}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Model} & \textbf{CV Accuracy} & \textbf{CV ROC-AUC} & \textbf{CV Recall} \\
+\hline
+Logistic Regression & 0.8498 $\pm$ 0.0193 & 0.9131 $\pm$ 0.0163 & 0.8730 $\pm$ 0.0248 \\
+Random Forest & 0.9117 $\pm$ 0.0192 & 0.9614 $\pm$ 0.0102 & 0.9112 $\pm$ 0.0150 \\
+XGBoost & 0.9227 $\pm$ 0.0142 & 0.9619 $\pm$ 0.0059 & 0.9300 $\pm$ 0.0202 \\
+\hline
+\end{tabular}
+\end{table}
+
+Low standard deviation across all folds confirms robust generalization without overfitting.
+
+\subsection{Error Analysis}
+
 \begin{itemize}
-    \item \textbf{False Negative (Missed Disease) = DANGEROUS}
-    \begin{itemize}
-        \item Patient with disease is told they're healthy
-        \item No treatment $\rightarrow$ Disease progression $\rightarrow$ Potential death
-        \item High medical liability and patient harm
-    \end{itemize}
-    
-    \item \textbf{False Positive (False Alarm) = Less Harmful}
-    \begin{itemize}
-        \item Healthy patient flagged for further testing
-        \item Additional tests clarify the situation
-        \item Minor cost and inconvenience, but patient is safe
-    \end{itemize}
+    \item \textbf{False Negative = Missed disease case (CRITICAL):} Patient with disease told they are healthy $\rightarrow$ no treatment $\rightarrow$ disease progression $\rightarrow$ potential death. Cost: \$20,000+.
+    \item \textbf{False Positive = False alarm (less harmful):} Healthy patient flagged for additional testing $\rightarrow$ minor cost and inconvenience. Cost: \$200.
 \end{itemize}
 
-\textbf{Therefore, we PRIORITIZE RECALL to minimize missed cases!}
+Confusion matrix analysis (test set):
+\begin{itemize}
+    \item Random Forest (Tuned): TN=105, FP=7, FN=10, TP=116
+    \item XGBoost (Tuned): TN=106, FP=6, FN=11, TP=115
+    \item Logistic Regression: TN=95, FP=17, FN=19, TP=107
+\end{itemize}
+
+\textbf{Recall is prioritized} to minimize missed diagnoses.
 
 \subsection{Cost-Sensitive Threshold Optimization}
 
-Standard classification uses 0.5 as the decision threshold. However, the asymmetric costs of false negatives (missed disease: \$20,000) versus false positives (unnecessary screening: \$200) require threshold optimization.
+By lowering the classification threshold from 0.5 to \textbf{0.05}:
+
+\begin{itemize}
+    \item Total expected cost drops from \$221,200 to \$26,400 (\textbf{88.1\% reduction})
+    \item Recall increases from 0.913 to \textbf{0.992} (catching 99.2\% of disease cases)
+    \item Precision decreases from 0.950 to 0.796 (acceptable trade-off for patient safety)
+\end{itemize}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{cost_threshold_curve.png}
-\caption{Cost-Sensitive Threshold Optimization Analysis}
+\caption{Cost-Sensitive Threshold Optimization: Cost vs.\ Threshold, Error Types, and Precision-Recall Trade-off}
 \label{fig:threshold}
 \end{figure}
 
-The optimal threshold was determined to be approximately 0.35, which reduces total expected cost by prioritizing recall while maintaining acceptable precision.
+\subsection{Model Calibration}
 
-\subsection{Model Calibration Analysis}
+Brier scores (lower = better calibration):
+\begin{itemize}
+    \item Logistic Regression: 0.1146
+    \item Random Forest (Tuned): 0.0697
+    \item XGBoost (Tuned): \textbf{0.0628} (best calibrated)
+\end{itemize}
 
-Well-calibrated probabilities are essential for clinical decision-making. Reliability diagrams (calibration curves) compare predicted probabilities against observed frequencies.
+All scores $< 0.15$, indicating good calibration suitable for clinical probability communication.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{model_calibration_curve.png}
-\caption{Calibration Curves and Brier Score Analysis}
+\caption{Calibration Curves and Probability Distribution by True Class}
 \label{fig:calibration}
 \end{figure}
 
-\textbf{Key Findings:}
-\begin{itemize}
-    \item Logistic Regression: Best calibrated (Brier Score lowest)
-    \item XGBoost: Slightly overconfident in predictions
-    \item All models suitable for clinical deployment with appropriate calibration
-\end{itemize}
-
-%==============================================================================
+% ============================================================================
+% 9. BIG DATA SCALING ANALYSIS
+% ============================================================================
 \section{Big Data Scaling Analysis}
-%==============================================================================
 
 \subsection{Performance Benchmarks}
 
-Testing demonstrated that Dask maintains efficient performance as dataset size increases:
-
 \begin{table}[H]
 \centering
-\caption{Scaling Performance Results}
-\begin{tabular}{|c|c|c|c|}
+\caption{Pandas vs.\ Dask Scaling Performance}
+\begin{tabular}{|c|r|c|c|c|}
 \hline
-\textbf{Scale Factor} & \textbf{Rows} & \textbf{Pandas Time (s)} & \textbf{Dask Time (s)} \\
+\textbf{Scale} & \textbf{Rows} & \textbf{Pandas (s)} & \textbf{Dask (s)} & \textbf{Speedup} \\
 \hline
-1x & 1,192 & 0.02 & 0.05 \\
-10x & 11,920 & 0.08 & 0.12 \\
-100x & 119,200 & 0.45 & 0.35 \\
-500x & 596,000 & 2.10 & 1.20 \\
+1$\times$ & 1,190 & 0.019 & 0.188 & 0.10$\times$ \\
+10$\times$ & 11,900 & 0.016 & 0.154 & 0.11$\times$ \\
+50$\times$ & 59,500 & 0.028 & 0.235 & 0.12$\times$ \\
+100$\times$ & 119,000 & 0.048 & 0.349 & 0.14$\times$ \\
+500$\times$ & 595,000 & 0.270 & 1.650 & 0.16$\times$ \\
 \hline
 \end{tabular}
 \end{table}
 
-\subsection{Benefits of Dask Architecture}
-
-\begin{enumerate}
-    \item \textbf{Lazy Evaluation:} Operations deferred until results needed
-    \item \textbf{Parallel Processing:} Utilizes all CPU cores automatically
-    \item \textbf{Out-of-Core:} Handles datasets larger than available RAM
-    \item \textbf{Scalability:} Same code runs on laptop or distributed cluster
-    \item \textbf{Fault Tolerance:} Can recover from worker failures
-\end{enumerate}
-
-\subsection{Detailed Runtime Benchmark: Pandas vs Dask}
-
-A comprehensive benchmark comparison was conducted to quantify the performance benefits of Dask over traditional Pandas for various data operations.
+\textbf{Observation:} For datasets $<$100K rows, Pandas is faster due to Dask's scheduling overhead. Dask's advantages emerge at larger scales (millions of rows) where:
+\begin{itemize}
+    \item Lazy evaluation minimizes memory footprint
+    \item Parallel processing utilizes all CPU cores
+    \item Out-of-core computation handles datasets exceeding RAM
+    \item Same code scales from laptop to distributed cluster
+\end{itemize}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{benchmark_pandas_vs_dask.png}
-\caption{Pandas vs Dask Runtime Benchmark Comparison}
+\caption{Detailed Pandas vs.\ Dask Benchmark: GroupBy, Filter, Sort Operations}
 \label{fig:benchmark}
 \end{figure}
 
-\textbf{Key Observations:}
-\begin{itemize}
-    \item Dask shows superior performance for aggregation operations at scale
-    \item GroupBy operations benefit most from parallelization
-    \item Memory efficiency allows Dask to handle larger-than-RAM datasets
-\end{itemize}
-
-%==============================================================================
+% ============================================================================
+% 10. EXPLAINABILITY
+% ============================================================================
 \section{Explainability}
-%==============================================================================
 
-\subsection{Feature Importance}
+Feature importance was extracted from both Random Forest and XGBoost models to ensure cross-model validation of predictive factors.
 
-Top 10 most influential features from Random Forest analysis:
+\subsection{Top 10 Features (Random Forest)}
 
-\begin{enumerate}
-    \item ST slope (26.5\%)
-    \item Chest pain type (15.2\%)
-    \item Max heart rate (12.8\%)
-    \item Exercise angina (10.5\%)
-    \item Oldpeak (8.7\%)
-    \item Age (7.3\%)
-    \item Sex (5.2\%)
-    \item Cholesterol (4.8\%)
-    \item Resting BP (4.1\%)
-    \item Fasting blood sugar (2.4\%)
-\end{enumerate}
-
-\subsection{SHAP (SHapley Additive exPlanations) Analysis}
-
-Beyond traditional feature importance, SHAP values were computed using TreeExplainer on the best Random Forest model. SHAP provides a unified measure of feature contributions grounded in cooperative game theory.
-
-\textbf{Key Advantages of SHAP:}
-\begin{itemize}
-    \item \textbf{Local Interpretability:} Explains individual patient predictions, enabling clinicians to understand \emph{why} a specific patient was flagged.
-    \item \textbf{Global Interpretability:} Summary plots aggregate per-feature contributions across the entire cohort.
-    \item \textbf{Consistency:} SHAP satisfies desirable theoretical properties (additivity, symmetry, null player).
-\end{itemize}
-
-\textbf{SHAP Summary Findings:}
-\begin{itemize}
-    \item ST slope and chest pain type exhibit the largest mean absolute SHAP values, confirming their dominant role.
-    \item High values of oldpeak and exercise angina consistently push predictions toward higher disease probability.
-    \item Max heart rate shows a protective (negative SHAP) effect when high, aligning with medical literature.
-\end{itemize}
+\begin{table}[H]
+\centering
+\caption{Feature Importance Rankings}
+\begin{tabular}{|c|l|c|l|c|}
+\hline
+\textbf{Rank} & \textbf{Feature (RF)} & \textbf{RF Score} & \textbf{Feature (XGB)} & \textbf{XGB Score} \\
+\hline
+1 & Heart\_Risk\_Index & 0.135 & ST slope & 0.250 \\
+2 & ST slope & 0.129 & chest pain type & 0.130 \\
+3 & chest pain type & 0.107 & exercise angina & 0.095 \\
+4 & oldpeak & 0.080 & sex & 0.070 \\
+5 & max heart rate & 0.072 & fasting blood sugar & 0.065 \\
+6 & Max\_HR\_Reserve & 0.065 & Heart\_Risk\_Index & 0.050 \\
+7 & Age\_Chol\_Interaction & 0.057 & BP\_Category\_High\_Stage2 & 0.040 \\
+8 & age & 0.052 & oldpeak & 0.038 \\
+9 & Cholesterol\_to\_Age\_Ratio & 0.051 & max heart rate & 0.035 \\
+10 & cholesterol & 0.048 & BP\_Category\_Normal & 0.030 \\
+\hline
+\end{tabular}
+\end{table}
 
 \subsection{Medical Interpretation}
 
-\begin{itemize}
-    \item \textbf{ST Slope:} ST segment changes indicate myocardial ischemia
-    \item \textbf{Chest Pain Type:} Typical angina strongly suggests coronary artery disease
-    \item \textbf{Max Heart Rate:} Chronotropic incompetence predicts mortality
-    \item \textbf{Exercise Angina:} Exercise-induced pain indicates active ischemia
-    \item \textbf{Oldpeak:} Magnitude of ECG abnormality correlates with disease severity
-\end{itemize}
-
-%==============================================================================
-\section{Actionable Insights}
-%==============================================================================
-
 \begin{enumerate}
-    \item \textbf{Age-Based Risk:} Senior patients (60+) have 2.5x higher disease risk. Implement mandatory screening for patients 50+.
-    
-    \item \textbf{Cholesterol Impact:} High cholesterol (>240 mg/dL) significantly increases risk. Initiate statin therapy discussions for patients >200.
-    
-    \item \textbf{Exercise Angina Warning:} Patients reporting exercise-induced chest pain have dramatically higher disease rates. Fast-track cardiology referrals.
-    
-    \item \textbf{Combined Risk Factors:} Multiple risk factors compound exponentially. Create "High Alert" protocol for patients with 3+ factors.
-    
-    \item \textbf{Model Effectiveness:} Best model achieves ~90\% detection rate with excellent discrimination (AUC > 0.93).
-    
-    \item \textbf{Preventive Opportunity:} Top predictors are obtainable in routine checkups. Include ECG and symptom questionnaire in annual exams.
-    
-    \item \textbf{Target Demographics:} Males over 55 with cardiac symptoms are highest priority for screening.
+    \item \textbf{ST slope:} ST segment changes during exercise ECG indicate myocardial ischemia. Both models rank it among the top 2 features.
+    \item \textbf{Chest pain type:} Typical angina strongly suggests coronary artery disease; asymptomatic type often indicates silent ischemia.
+    \item \textbf{Heart\_Risk\_Index (engineered):} Composite metric combining age, cholesterol, and blood pressure was the \#1 predictor in Random Forest, validating the domain-driven engineering approach.
+    \item \textbf{Max heart rate:} Chronotropic incompetence (lower-than-expected max HR) predicts cardiac mortality.
+    \item \textbf{Exercise angina:} Exercise-induced chest pain indicates active ischemia and significant coronary stenosis.
 \end{enumerate}
 
-%==============================================================================
-\section{Strategic Recommendations for CEO}
-%==============================================================================
+\textbf{Clinical actionability:} The top features are all obtainable from a standard clinical workup (ECG + patient history), making the model practical for primary care settings without expensive laboratory tests.
+
+% ============================================================================
+% 11. ACTIONABLE INSIGHTS
+% ============================================================================
+\section{Actionable Insights}
+
+\begin{enumerate}
+    \item \textbf{Age-based risk:} Senior patients (60+) have a 69.1\% disease rate, 2.1$\times$ higher than young patients (32.6\%). Statistical validation: $\chi^2 = 57.92$, $p < 0.001$.\\
+    $\rightarrow$ \textit{Action:} Mandatory annual cardiac screening for all patients aged 50+.
+
+    \item \textbf{Cholesterol impact:} High cholesterol ($>$240 mg/dL) patients show 61.3\% disease rate vs.\ 38.4\% for normal ($<$200 mg/dL). $t$-test: $p = 0.0014$, Cohen's $d = 0.22$.\\
+    $\rightarrow$ \textit{Action:} Initiate statin therapy discussion for patients with cholesterol $>$200.
+
+    \item \textbf{Exercise angina as warning sign:} Patients with exercise angina have 83.1\% disease rate vs.\ 33.7\% without.\\
+    $\rightarrow$ \textit{Action:} Fast-track cardiology referral for any patient reporting exercise-induced chest pain.
+
+    \item \textbf{Combined risk factors:} Senior + High Cholesterol + High BP (Stage 1) = \textbf{78.0\%} disease rate.\\
+    $\rightarrow$ \textit{Action:} Create ``High Alert'' protocol for patients with 3+ risk factors.
+
+    \item \textbf{Model effectiveness:} Best model achieves 92\% Recall with AUC = 0.97. Cost-optimized threshold catches 99.2\% of cases.\\
+    $\rightarrow$ \textit{Action:} Deploy model for automated risk scoring in hospital EHR system.
+
+    \item \textbf{Preventive opportunity:} Top predictors (ST slope, chest pain type) are obtainable in routine checkups.\\
+    $\rightarrow$ \textit{Action:} Include ECG and symptom questionnaire in annual physical exams.
+
+    \item \textbf{Target demographics:} Males over 55 with any cardiac symptoms = highest priority. Post-menopausal women with diabetes = second priority.\\
+    $\rightarrow$ \textit{Action:} Launch targeted screening campaign for high-risk demographics.
+\end{enumerate}
+
+% ============================================================================
+% 12. BUSINESS DECISION RECOMMENDATIONS
+% ============================================================================
+\section{Business Decision Recommendations}
 
 \subsection{Recommendation 1: Deploy Predictive Screening System}
 
-\textbf{Action:} Integrate ML-based risk scoring into Electronic Health Records
+Integrate ML-based risk scoring into Electronic Health Records. Automated risk flags during routine visits reduce manual screening workload by 70\% and enable proactive patient outreach.
 
-\textbf{Business Reasoning:}
-\begin{itemize}
-    \item Automated risk flags during routine visits
-    \item Reduces manual screening workload by 70\%
-    \item Enables proactive patient outreach
-    \item Supports value-based care metrics
-\end{itemize}
-
-\textbf{Expected Outcome:} 25\% increase in early detection, 15\% reduction in emergency admissions
+\textbf{Expected outcome:} 25\% increase in early detection, 15\% reduction in emergency admissions.
 
 \subsection{Recommendation 2: Launch Preventive Cardiology Program}
 
-\textbf{Action:} Create dedicated preventive care track for high-risk patients
+Create a dedicated preventive care track for patients identified as high-risk by the model. Shift from reactive to preventive care, differentiating the hospital in a competitive market.
 
-\textbf{Business Reasoning:}
-\begin{itemize}
-    \item Shift from reactive to preventive care model
-    \item Differentiates hospital in competitive market
-    \item Reduces downstream emergency costs
-\end{itemize}
+\textbf{Expected outcome:} 30\% reduction in severe cardiac events for enrolled patients.
 
-\textbf{Expected Outcome:} 30\% reduction in severe cardiac events for enrolled patients
+\subsection{Recommendation 3: Risk-Based Threshold Management}
 
-\subsection{Recommendation 3: Implement Lifestyle Intervention Program}
+Deploy the model with an optimized threshold (0.05) that prioritizes patient safety. This cost-sensitive approach reduces total expected healthcare costs by 88.1\% while catching 99.2\% of disease cases.
 
-\textbf{Action:} Partner with wellness providers for diet/exercise programs
+\textbf{Expected outcome:} Annual cost reduction from \$221,200 to \$26,400 per 238 patients screened.
 
-\textbf{Business Reasoning:}
-\begin{itemize}
-    \item Modifiable risk factors are major predictors
-    \item Non-pharmaceutical interventions reduce liability
-    \item Builds patient loyalty through holistic care
-\end{itemize}
+\subsection{Recommendation 4: Continuous Model Monitoring}
 
-\textbf{Expected Outcome:} 20\% average cholesterol reduction in participants
+Establish an MLOps pipeline with Kolmogorov-Smirnov drift detection, automated retraining triggers, and performance KPI dashboards. Medical patterns evolve; sustained accuracy requires ongoing monitoring.
 
-\subsection{Recommendation 4: Insurance Partnership}
+\textbf{Expected outcome:} Sustained model AUC $\geq$ 0.90, regulatory compliance, and clinical trust.
 
-\textbf{Action:} Offer risk scoring services to insurance partners
+\subsection{Recommendation 5: Insurance \& Revenue Partnerships}
 
-\textbf{Business Reasoning:}
-\begin{itemize}
-    \item Creates new B2B revenue stream
-    \item Positions organization as healthcare AI leader
-    \item May lead to preferred provider status
-\end{itemize}
+Offer risk scoring services to insurance partners as a B2B product, positioning the organization as a healthcare AI leader.
 
-\textbf{Expected Outcome:} \$500K-\$1M annual consulting revenue
+\textbf{Expected outcome:} \$500K--\$1M annual consulting revenue.
 
-\subsection{Recommendation 5: Continuous Improvement Infrastructure}
-
-\textbf{Action:} Establish MLOps pipeline for model monitoring and retraining
-
-\textbf{Business Reasoning:}
-\begin{itemize}
-    \item Medical patterns evolve over time
-    \item Regulatory compliance requirements
-    \item Prevents model drift
-\end{itemize}
-
-\textbf{Expected Outcome:} Sustained model accuracy and regulatory compliance
-
-%==============================================================================
-\section{Cost-Benefit Analysis}
-%==============================================================================
+% ============================================================================
+% 13. COST-BENEFIT ANALYSIS
+% ============================================================================
+\section{Cost--Benefit Analysis}
 
 \subsection{Assumptions}
 
@@ -777,11 +620,11 @@ Beyond traditional feature importance, SHAP values were computed using TreeExpla
 \hline
 \textbf{Parameter} & \textbf{Value} \\
 \hline
-Average emergency heart attack treatment cost & \$20,000 \\
+Average emergency treatment cost & \$20,000 \\
 Preventive screening cost per patient & \$500 \\
-Annual patients to be screened & 10,000 \\
-Heart disease prevalence & 55\% \\
-Model detection rate (Recall) & 90\% \\
+Annual patients screened & 10,000 \\
+Heart disease prevalence & 52.86\% \\
+Model detection rate (Recall) & 92.06\% \\
 Prevention rate for detected cases & 30\% \\
 System implementation cost & \$150,000 \\
 Annual maintenance cost & \$30,000 \\
@@ -798,42 +641,55 @@ Annual maintenance cost & \$30,000 \\
 \hline
 \textbf{Metric} & \textbf{Value} \\
 \hline
-Expected heart disease cases & 5,500 \\
-Cases detected by model & 4,950 \\
-Emergency cases prevented & 1,485 \\
+Expected heart disease cases & 5,286 \\
+Cases detected by model & 4,866 \\
+Emergency cases prevented & 1,460 \\
 \hline
-\textbf{Cost WITHOUT system} & \$110,000,000 \\
-\textbf{Cost WITH system} & \$85,300,000 \\
+Cost WITHOUT system & \$105,714,286 \\
+Cost WITH system & \$81,548,114 \\
 \hline
-\textbf{Annual Savings} & \$24,700,000 \\
-Year 1 Net Savings (after implementation) & \$24,550,000 \\
-Payback Period & 0.07 months \\
-ROI (Year 2+) & 823\% \\
+\textbf{Annual Savings} & \textbf{\$24,166,171} \\
+Year 1 Net Savings & \$24,016,171 \\
+Payback Period & 0.1 months \\
+ROI (Year 1) & 16,011\% \\
+ROI (Year 2+) & 80,554\% \\
 \hline
 \end{tabular}
 \end{table}
 
 \subsection{5-Year Cumulative Savings}
 
-\begin{itemize}
-    \item Year 1: \$24,550,000
-    \item Year 2: \$49,250,000
-    \item Year 3: \$73,950,000
-    \item Year 4: \$98,650,000
-    \item Year 5: \$123,350,000
-\end{itemize}
+\begin{table}[H]
+\centering
+\caption{Cumulative Savings Projection}
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Year} & \textbf{Cumulative Net Savings} \\
+\hline
+Year 1 & \$24,016,171 \\
+Year 2 & \$48,182,343 \\
+Year 3 & \$72,348,514 \\
+Year 4 & \$96,514,686 \\
+Year 5 & \$120,680,857 \\
+\hline
+\end{tabular}
+\end{table}
 
-\textbf{Investment Decision: STRONGLY RECOMMENDED}
-
-\subsection{Scenario-Based Cost-Benefit Analysis}
-
-Three scenarios (Worst Case, Expected Case, Best Case) were analyzed to provide risk-adjusted investment projections.
+\subsection{Scenario Analysis}
 
 \begin{table}[H]
 \centering
 \caption{Scenario-Based Cost-Benefit Analysis}
 \label{tab:scenario}
-\input{tables/scenario_cost_benefit.tex}
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Scenario} & \textbf{Net Savings (Annual)} & \textbf{ROI (\%)} & \textbf{Key Assumption} \\
+\hline
+Worst Case & \$2,790,000 & 1,550\% & 5K patients, 20\% prevention \\
+Expected Case & \$19,200,000 & 10,668\% & 10K patients, 30\% prevention \\
+Best Case & \$67,380,000 & 37,434\% & 20K patients, 40\% prevention \\
+\hline
+\end{tabular}
 \end{table}
 
 \begin{figure}[H]
@@ -843,147 +699,103 @@ Three scenarios (Worst Case, Expected Case, Best Case) were analyzed to provide 
 \label{fig:scenario}
 \end{figure}
 
-\textbf{Executive Summary:} Even under worst-case assumptions, the system delivers positive returns, making this a low-risk, high-reward investment.
+\textbf{Investment decision:} Even under worst-case assumptions, the system delivers \$2.79M annual savings with 1,550\% ROI. This is a \textbf{low-risk, high-reward} investment.
 
-%==============================================================================
-\section{Data Governance and Model Monitoring}
-%==============================================================================
-
-\subsection{Model Drift Detection}
-
-Continuous monitoring for distribution drift is essential for maintaining model performance in production. The Kolmogorov-Smirnov test is used to detect significant shifts in prediction distributions.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.95\textwidth]{model_drift_monitoring.png}
-\caption{Model Drift Detection and Performance Monitoring}
-\label{fig:drift}
-\end{figure}
-
-\subsection{Retraining Schedule}
-
-\begin{table}[H]
-\centering
-\caption{Model Retraining Trigger Matrix}
-\label{tab:retrain}
-\input{tables/retraining_schedule.tex}
-\end{table}
-
-\subsection{Monitoring KPIs}
-
-\begin{table}[H]
-\centering
-\caption{Model Monitoring KPIs and Thresholds}
-\label{tab:kpis}
-\input{tables/monitoring_kpis.tex}
-\end{table}
-
-\subsection{Governance Framework}
-
-\begin{enumerate}
-    \item \textbf{Data Quality:} Automated validation pipelines with schema enforcement
-    \item \textbf{Data Security:} PHI/PII encryption (AES-256), RBAC, HIPAA compliance
-    \item \textbf{Model Governance:} Version control, A/B testing, shadow deployment
-    \item \textbf{Compliance \& Ethics:} Bias monitoring, explainability reports, fairness audits
-\end{enumerate}
-
-%==============================================================================
+% ============================================================================
+% 14. LIMITATIONS & FUTURE WORK
+% ============================================================================
 \section{Limitations \& Future Work}
-%==============================================================================
 
 \subsection{Current Limitations}
 
 \begin{enumerate}
-    \item \textbf{Dataset Size:} Current dataset (~1,200 patients) is limited for production deployment
-    
-    \item \textbf{Temporal Factors:} Point-in-time measurements don't capture disease progression
-    
-    \item \textbf{Potential Bias:} Combined dataset from different sources may have selection bias
-    
-    \item \textbf{Missing Variables:} BMI, smoking history, family history not available
+    \item \textbf{Dataset size:} 1,190 patients is limited for production deployment; models would benefit from larger, multi-site datasets.
+    \item \textbf{Point-in-time data:} Current features are single measurements; longitudinal data would capture disease progression over time.
+    \item \textbf{Potential selection bias:} Combined dataset from Cleveland, Hungary, and Statlog may have geographic/demographic biases.
+    \item \textbf{Missing clinical variables:} BMI, smoking history, family history, medication data are not available but clinically relevant.
+    \item \textbf{Dask overhead:} For datasets under 100K rows, Dask is slower than Pandas due to scheduling overhead; benefits emerge at larger scales.
 \end{enumerate}
 
-\subsection{Future Work Roadmap}
+\subsection{Future Work}
 
-\textbf{Phase 1 (Months 1-6): Data Enhancement}
 \begin{itemize}
-    \item Integrate with hospital EHR for larger dataset
-    \item Add demographic diversity through multi-site collaboration
-    \item Include longitudinal patient records
+    \item \textbf{Data enhancement:} Integrate with hospital EHR systems; include longitudinal records; add demographic diversity.
+    \item \textbf{Model advancement:} Experiment with deep learning (neural networks); develop survival analysis for time-to-event prediction.
+    \item \textbf{Real-time integration:} Deploy Kafka streaming for real-time vital sign monitoring; integrate with wearable device data.
+    \item \textbf{Concept drift monitoring:} Implement automated drift detection (KS test) and retraining pipelines for sustained production accuracy.
 \end{itemize}
 
-\textbf{Phase 2 (Months 6-12): Model Advancement}
-\begin{itemize}
-    \item Implement deep learning models
-    \item Develop survival analysis for time-to-event prediction
-    \item Build uncertainty quantification
-\end{itemize}
+% ============================================================================
+% DATA GOVERNANCE (BONUS)
+% ============================================================================
+\section*{Appendix: Data Governance \& Model Monitoring}
+\addcontentsline{toc}{section}{Appendix: Data Governance \& Model Monitoring}
 
-\textbf{Phase 3 (Months 12-18): Real-Time Integration}
-\begin{itemize}
-    \item Deploy Kafka streaming for real-time monitoring
-    \item Integrate with wearable device data
-    \item Build real-time alerting system
-\end{itemize}
-
-\textbf{Phase 4 (Ongoing): Continuous Improvement}
-\begin{itemize}
-    \item Automated model retraining pipeline
-    \item A/B testing framework for model updates
-    \item Regular fairness audits
-\end{itemize}
-
-%==============================================================================
-\section{Conclusion}
-%==============================================================================
-
-This Big Data Analytics project successfully developed a comprehensive heart disease prediction system that:
+A comprehensive governance framework was designed for production deployment:
 
 \begin{enumerate}
-    \item \textbf{Addressed Big Data Challenges:} Demonstrated Dask-based scalable processing for Volume, Velocity, and Variety with linear scaling performance.
-    
-    \item \textbf{Built Robust ML Pipeline:} Implemented complete preprocessing with domain-specific feature engineering, trained and compared multiple algorithms, achieving high recall rates critical for medical screening.
-    
-    \item \textbf{Delivered Business Value:} Identified key risk factors for targeted interventions, provided actionable insights for clinical decision-making, and demonstrated strong ROI.
-    
-    \item \textbf{Ensured Explainability:} Feature importance and SHAP values provide interpretable predictions supporting clinical acceptance and regulatory compliance.
+    \item \textbf{Model Drift Detection:} Kolmogorov-Smirnov test monitors prediction distributions. Simulated drift showed KS statistic = 0.219 ($p < 0.001$), triggering recalibration.
+    \item \textbf{Retraining Schedule:} Scheduled every 6 months; triggered earlier if AUC drops $>$3\% or KS statistic $>$ 0.1.
+    \item \textbf{KPI Monitoring:} AUC-ROC $\geq$ 0.90, prediction latency $<$ 100ms, false negative rate $<$ 12\%.
+    \item \textbf{Data Security:} PHI/PII encryption (AES-256), RBAC, HIPAA compliance, audit logging.
 \end{enumerate}
 
-\vspace{1cm}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{model_drift_monitoring.png}
+\caption{Model Drift Detection: Prediction Distribution Shift and Performance Degradation Over Time}
+\label{fig:drift}
+\end{figure}
+
+% ============================================================================
+% CONCLUSION
+% ============================================================================
+\section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
+
+This project successfully developed a scalable heart disease prediction system using Big Data analytics:
+
+\begin{enumerate}
+    \item \textbf{Big Data architecture:} Dask-based pipeline demonstrated processing of up to 595,000 records with lazy evaluation, parallel processing, and multi-format ingestion (CSV + JSON).
+
+    \item \textbf{Robust ML pipeline:} Complete preprocessing (median imputation, IQR/Z-score outlier treatment, winsorization, 7 engineered features, StandardScaler + OneHotEncoder) feeding three classifiers with cross-validation and hyperparameter tuning.
+
+    \item \textbf{Strong performance:} Random Forest achieves Accuracy = 0.9244, Recall = 0.9206, AUC = 0.9664. Cost-optimized threshold raises Recall to 0.992 with 88.1\% cost reduction.
+
+    \item \textbf{Business value:} \$24.2M projected annual savings, 0.1-month payback period, positive ROI across all scenarios (worst case: 1,550\%).
+
+    \item \textbf{Explainability:} Feature importance analysis from both RF and XGBoost identifies clinically actionable predictors obtainable from routine checkups.
+\end{enumerate}
+
+\vspace{0.5cm}
 \begin{center}
 \fbox{\parbox{0.8\textwidth}{
 \centering
-\textbf{FINAL RECOMMENDATION: APPROVE SYSTEM DEPLOYMENT}\\[0.3cm]
-The predictive screening system delivers high detection rates, substantial cost savings, and scalable architecture ready for enterprise deployment.
+\textbf{RECOMMENDATION: APPROVE SYSTEM DEPLOYMENT}\\[0.3cm]
+The predictive screening system delivers high detection rates (92\% Recall), substantial cost savings (\$24M/year), and scalable architecture ready for enterprise healthcare deployment.
 }}
 \end{center}
 
-\vspace{2cm}
-\begin{center}
-\textit{Project completed as part of Big Data Analytics Course Final Project}
-\end{center}
-
-%==============================================================================
+% ============================================================================
+% REFERENCES
+% ============================================================================
 \section*{References}
 \addcontentsline{toc}{section}{References}
-%==============================================================================
 
 \begin{enumerate}
-    \item Detrano, R., Janosi, A., Steinbrunn, W., et al. (1989). International application of a new probability algorithm for the diagnosis of coronary artery disease. \textit{American Journal of Cardiology}, 64(5), 304-310.
-    
-    \item Chen, T., \& Guestrin, C. (2016). XGBoost: A scalable tree boosting system. \textit{Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining}, 785-794.
-    
-    \item Rocklin, M. (2015). Dask: Parallel Computation with Blocked algorithms and Task Scheduling. \textit{Proceedings of the 14th Python in Science Conference}, 130-136.
-    
-    \item World Health Organization. (2021). Cardiovascular diseases (CVDs) Fact Sheet. WHO Media Centre. Retrieved from https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases
-    
-    \item Lundberg, S. M., \& Lee, S. I. (2017). A Unified Approach to Interpreting Model Predictions. \textit{Advances in Neural Information Processing Systems}, 30, 4765-4774.
-    
-    \item Breiman, L. (2001). Random Forests. \textit{Machine Learning}, 45(1), 5-32.
-    
-    \item Pedregosa, F., Varoquaux, G., Gramfort, A., et al. (2011). Scikit-learn: Machine Learning in Python. \textit{Journal of Machine Learning Research}, 12, 2825-2830.
-    
-    \item Niculescu-Mizil, A., \& Caruana, R. (2005). Predicting good probabilities with supervised learning. \textit{Proceedings of the 22nd International Conference on Machine Learning}, 625-632.
+    \item Detrano, R., Janosi, A., Steinbrunn, W., et al. (1989). International application of a new probability algorithm for the diagnosis of coronary artery disease. \textit{American Journal of Cardiology}, 64(5), 304--310.
+
+    \item Chen, T., \& Guestrin, C. (2016). XGBoost: A scalable tree boosting system. \textit{Proceedings of the 22nd ACM SIGKDD}, 785--794.
+
+    \item Rocklin, M. (2015). Dask: Parallel computation with blocked algorithms and task scheduling. \textit{Proceedings of the 14th Python in Science Conference}, 130--136.
+
+    \item World Health Organization. (2021). Cardiovascular diseases (CVDs) Fact Sheet. Retrieved from \url{https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases}
+
+    \item Breiman, L. (2001). Random Forests. \textit{Machine Learning}, 45(1), 5--32.
+
+    \item Pedregosa, F., et al. (2011). Scikit-learn: Machine learning in Python. \textit{JMLR}, 12, 2825--2830.
+
+    \item Niculescu-Mizil, A., \& Caruana, R. (2005). Predicting good probabilities with supervised learning. \textit{ICML}, 625--632.
 \end{enumerate}
 
 \end{document}
