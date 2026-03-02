@@ -241,16 +241,23 @@ Two complementary methods were applied:
 
 \subsection{Scaling, Encoding \& Pipeline Architecture}
 
-To prevent \textbf{data leakage}, all scaling and encoding are performed inside a scikit-learn \texttt{Pipeline} using a \texttt{ColumnTransformer}.  The transformer is fitted \emph{only} on the training fold; the test set (and each cross-validation fold) is transformed with already-fitted parameters.
+To prevent \textbf{data leakage}, the entire preprocessing chain is implemented as four custom \texttt{sklearn} transformers wrapped in a scikit-learn \texttt{Pipeline}.  All fitted parameters (medians, percentile bounds, scaler means/stds, encoder categories) are learned \emph{only} on the training fold; the test set (and each cross-validation fold) is transformed with already-fitted parameters.
 
 \begin{itemize}
-    \item \textbf{ColumnTransformer:}
-    \begin{itemize}
-        \item \texttt{StandardScaler} $\rightarrow$ 15 numerical features (zero mean, unit variance)
-        \item \texttt{OneHotEncoder} $\rightarrow$ 3 categorical features (Age\_Group, BP\_Category, Cholesterol\_Risk\_Level) $\rightarrow$ 7 binary columns
-    \end{itemize}
-    \item \textbf{Final feature count:} 22 features after transformation ($15 + 7$)
-    \item \textbf{Pipeline wrapper:} A helper function \texttt{make\_pipeline(model)} constructs a fresh \texttt{Pipeline(preprocessor, model)} for every cross-validation and tuning call, guaranteeing that the scaler/encoder is re-fitted per fold.
+    \item \textbf{Pipeline steps (in order):}
+    \begin{enumerate}
+        \item \texttt{CholesterolFixer} --- replaces cholesterol $= 0$ with NaN (domain rule, no fitted params)
+        \item \texttt{DataFrameImputer} --- median imputation; medians fitted on training data
+        \item \texttt{DataFrameWinsorizer} --- clips at 1st/99th percentile bounds fitted on training data
+        \item \texttt{FeatureEngineer} --- creates 7 rule-based features (no fitted params)
+        \item \texttt{ColumnTransformer}:
+        \begin{itemize}
+            \item \texttt{StandardScaler} $\rightarrow$ 16 numerical features (11 original + 5 engineered numeric incl.\ binary \texttt{Cholesterol\_Risk\_Level})
+            \item \texttt{OneHotEncoder} $\rightarrow$ 2 categorical features (\texttt{Age\_Group}, \texttt{BP\_Category}) $\rightarrow$ 4 binary columns (\texttt{drop='first'})
+        \end{itemize}
+    \end{enumerate}
+    \item \textbf{Final feature count:} 20 features after transformation ($16 + 4$)
+    \item \textbf{Pipeline wrapper:} A helper function \texttt{make\_pipeline(model)} constructs a fresh \texttt{Pipeline} (all 5 preprocessing steps + model) for every cross-validation and tuning call, guaranteeing that all fitted parameters are re-learned per fold.
 \end{itemize}
 
 \subsection{Train/Test Split}
@@ -315,7 +322,7 @@ Cholesterol\_Risk\_Level & Binary flag: cholesterol $>$ 240 mg/dL \\
 \end{tabular}
 \end{table}
 
-\textbf{Feature selection:} All 22 features were retained for modeling. The engineered \texttt{Heart\_Risk\_Index} proved to be the single most predictive feature in Random Forest, validating the domain-driven approach. Both Random Forest and XGBoost importance rankings were used to confirm feature relevance (no redundant features identified).
+\textbf{Feature selection:} All 20 features were retained for modeling. The engineered \texttt{Heart\_Risk\_Index} proved to be the single most predictive feature in Random Forest, validating the domain-driven approach. Both Random Forest and XGBoost importance rankings were used to confirm feature relevance (no redundant features identified).
 
 % ============================================================================
 % 7. MACHINE LEARNING MODELS
@@ -778,7 +785,7 @@ This project successfully developed a scalable heart disease prediction system u
 \begin{enumerate}
     \item \textbf{Big Data architecture:} Dask-based pipeline demonstrated processing of up to 595,000 records with lazy evaluation, parallel processing, and multi-format ingestion (CSV + JSON).
 
-    \item \textbf{Leak-free ML pipeline:} \texttt{ColumnTransformer} (StandardScaler + OneHotEncoder) wrapped inside a scikit-learn \texttt{Pipeline}, ensuring the scaler/encoder is fitted on training data only.  Cross-validation and hyperparameter tuning use Pipeline-wrapped models to prevent data leakage.  Threshold selection uses out-of-fold probabilities (\texttt{cross\_val\_predict}) on the training set.
+    \item \textbf{Leak-free ML pipeline:} Four custom \texttt{sklearn} transformers (\texttt{CholesterolFixer}, \texttt{DataFrameImputer}, \texttt{DataFrameWinsorizer}, \texttt{FeatureEngineer}) followed by a \texttt{ColumnTransformer} (StandardScaler for 16 numeric + OneHotEncoder for 2 categorical features) are wrapped inside a scikit-learn \texttt{Pipeline}, ensuring all fitted parameters (medians, percentile bounds, scaler/encoder) are learned on training data only.  Cross-validation and hyperparameter tuning use Pipeline-wrapped models to prevent data leakage.  Threshold selection uses out-of-fold probabilities (\texttt{cross\_val\_predict}) on the training set.
 
     \item \textbf{Strong performance:} Random Forest achieves Accuracy = 0.9244, Recall = 0.9206, AUC = 0.9653. Cost-optimized threshold (OOF-selected, $t = 0.05$) raises Recall to 0.992 with 88.1\% cost reduction.
 
