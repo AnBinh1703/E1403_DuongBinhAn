@@ -1,19 +1,18 @@
-\begin{tabular}{|l|c|c|c|}
-\hline
-\textbf{KPI} & \textbf{Baseline} & \textbf{Target} & \textbf{Monitoring Frequency} \\
-\hline
-Recall (Disease Detection) & 85.2\% & $\geq 85\%$ & Daily \\
-\hline
-Precision (False Alarm Rate) & 87.3\% & $\geq 85\%$ & Daily \\
-\hline
-AUC-ROC Score & 0.923 & $\geq 0.90$ & Weekly \\
-\hline
-Model Accuracy & 86.2\% & $\geq 86\%$ & Weekly \\
-\hline
-Data Drift Detection & - & Threshold: 5\% & Daily \\
-\hline
-Prediction Latency & 45ms & $<$ 100ms & Real-time \\
-\hline
-System Uptime & - & $\geq 99.5\%$ & Continuous \\
-\hline
+\begin{table}
+\caption{Model Monitoring KPIs and Thresholds}
+\label{tab:kpis}
+\begin{tabular}{lllll}
+\toprule
+KPI Category & Metric & Target & Alert Threshold & Frequency \\
+\midrule
+Model Performance & AUC-ROC & >=0.90 & <0.88 & Daily \\
+Model Performance & Precision@Recall=0.85 & >=0.70 & <0.65 & Daily \\
+Data Quality & Missing Value Rate & <5% & >10% & Real-time \\
+Data Quality & Feature Distribution Shift & KS<0.1 & KS>0.15 & Weekly \\
+System Health & Prediction Latency (P95) & <100ms & >200ms & Real-time \\
+System Health & Throughput & >1000/min & <500/min & Real-time \\
+Business & Patients Screened & >500/day & <300/day & Daily \\
+Business & False Negative Rate & <12% & >15% & Weekly \\
+\bottomrule
 \end{tabular}
+\end{table}
