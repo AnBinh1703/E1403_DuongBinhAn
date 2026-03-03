@@ -282,7 +282,7 @@ The following visualizations were produced:
     \item Target distribution (bar chart and pie chart)
     \item Age distribution by heart disease status
     \item Cholesterol distribution comparison (disease vs.\ healthy)
-    \item $22 \times 22$ correlation matrix heatmap (full square + lower triangle)
+    \item $12 \times 12$ correlation matrix heatmap on the 12 original features (full square + lower triangle overlap)
     \item Boxplots for key clinical variables by disease group
     \item Feature-pair bar charts for top correlated features
 \end{enumerate}
@@ -741,6 +741,7 @@ Best Case & \$67,380,000 & 37,434\% & 20K patients, 40\% prevention \\
     \item \textbf{Potential selection bias:} Combined dataset from Cleveland, Hungary, and Statlog may have geographic/demographic biases.
     \item \textbf{Missing clinical variables:} BMI, smoking history, family history, medication data are not available but clinically relevant.
     \item \textbf{Dask overhead:} For datasets under 100K rows, Dask is slower than Pandas due to scheduling overhead; benefits emerge at larger scales.
+    \item \textbf{SHAP local interpretability:} The current project scope focuses on Global Explainability through feature importance rankings aggregated across the full test set; implementation of SHAP for per-patient Local Interpretation will be addressed in the next project phase.
 \end{enumerate}
 
 \subsection{Future Work}
@@ -785,7 +786,7 @@ This project successfully developed a scalable heart disease prediction system u
 \begin{enumerate}
     \item \textbf{Big Data architecture:} Dask-based pipeline demonstrated processing of up to 595,000 records with lazy evaluation, parallel processing, and multi-format ingestion (CSV + JSON).
 
-    \item \textbf{Leak-free ML pipeline:} Four custom \texttt{sklearn} transformers (\texttt{CholesterolFixer}, \texttt{DataFrameImputer}, \texttt{DataFrameWinsorizer}, \texttt{FeatureEngineer}) followed by a \texttt{ColumnTransformer} (StandardScaler for 16 numeric + OneHotEncoder for 2 categorical features) are wrapped inside a scikit-learn \texttt{Pipeline}, ensuring all fitted parameters (medians, percentile bounds, scaler/encoder) are learned on training data only.  Cross-validation and hyperparameter tuning use Pipeline-wrapped models to prevent data leakage.  Threshold selection uses out-of-fold probabilities (\texttt{cross\_val\_predict}) on the training set.
+    \item \textbf{Leak-free ML pipeline:} A stratified 80/20 split is performed on raw data before any parameter estimation. A single scikit-learn \texttt{Pipeline} then applies five ordered steps exclusively fitted on the training fold: (i)~\texttt{CholesterolFixer} replaces biologically impossible zero values (domain rule, no trained parameters); (ii)~\texttt{DataFrameImputer} fills remaining NaNs with training-set medians; (iii)~\texttt{DataFrameWinsorizer} clips values at training-set 1st/99th percentiles; (iv)~\texttt{FeatureEngineer} creates seven rule-based features (Report Table~3); and (v)~a \texttt{ColumnTransformer} applies \texttt{StandardScaler} to 16 numeric features (11 original + 5 engineered, including binary \texttt{Cholesterol\_Risk\_Level}) and \texttt{OneHotEncoder} (\texttt{drop=`first'}) to the two categorical features (\texttt{Age\_Group}, \texttt{BP\_Category}), yielding exactly \textbf{20 output features} ($16 + 4$ dummies). All CV folds and hyperparameter search iterations instantiate a fresh copy of this Pipeline via \texttt{make\_pipeline()}, re-fitting every learned parameter on the training fold only. Threshold selection uses out-of-fold probabilities (\texttt{cross\_val\_predict}) on the training set, with no test-set information used at any stage.
 
     \item \textbf{Strong performance:} Random Forest achieves Accuracy = 0.9244, Recall = 0.9206, AUC = 0.9653. Cost-optimized threshold (OOF-selected, $t = 0.05$) raises Recall to 0.992 with 88.1\% cost reduction.
 
