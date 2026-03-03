@@ -7,14 +7,10 @@ numpy>=1.23.0
 
 # Big Data Processing
 dask[complete]>=2023.1.0
-dask-ml>=2023.1.0
 
 # Machine Learning
 scikit-learn>=1.2.0
 xgboost>=1.7.0
-
-# Model Explainability
-shap>=0.12.0
 
 # Statistical Analysis
 scipy>=1.10.0

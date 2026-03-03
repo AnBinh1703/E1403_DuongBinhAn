@@ -294,7 +294,28 @@ The following visualizations were produced:
     \item \textbf{Exercise angina} ($r = 0.481$), \textbf{chest pain type} ($r = 0.460$), and \textbf{oldpeak} ($r = 0.416$) are also strongly correlated with the target.
     \item Most independent features show low multicollinearity ($|r| < 0.5$), favorable for model stability.
     \item Senior patients (60+) have a \textbf{69.1\%} disease rate vs.\ 32.6\% for young patients ($<$40).
-    \item High cholesterol ($>$240 mg/dL) patients show \textbf{61.3\%} disease rate vs.\ 38.4\% for normal cholesterol.
+    \item High cholesterol ($>$240 mg/dL) patients show \textbf{53.3\%} disease rate vs.\ 52.5\% for normal cholesterol ($\leq$240 mg/dL).
+\end{enumerate}
+
+\subsection{Business Questions Answered by Charts}
+
+Three business questions were formulated and answered with dedicated visualizations and statistical tests:
+
+\begin{enumerate}
+    \item \textbf{BQ1 --- Which age group has the highest heart disease probability?}\\
+    \textit{Figure:} \texttt{outputs/figures/} (Age Group bar chart generated inline).\\
+    \textit{Finding:} Senior patients (60+) have a 69.1\% disease rate, 2.1$\times$ higher than Young ($<$40) at 32.6\%.  Chi-square test: $\chi^2 = 57.92$, $p < 0.001$.\\
+    \textit{Action:} Mandatory annual cardiac screening for all patients aged 50+.
+
+    \item \textbf{BQ2 --- Does high cholesterol significantly increase heart disease risk?}\\
+    \textit{Figure:} Cholesterol distribution + box-plot comparison (generated inline).\\
+    \textit{Finding:} High cholesterol ($>$240 mg/dL) patients show 53.3\% disease rate vs.\ 52.5\% for normal ($\leq$240 mg/dL); the difference is small.  Independent $t$-test on continuous cholesterol values is the primary significance test.\\
+    \textit{Action:} Initiate statin therapy discussion for patients with cholesterol $>$240; combine with other risk factors for clinical decisions.
+
+    \item \textbf{BQ3 --- Which combination of risk factors increases heart disease risk most?}\\
+    \textit{Figure:} Top-10 risk-factor combinations horizontal bar chart + BP Category bar chart (generated inline).\\
+    \textit{Finding:} ``Senior + CholNormal + High\_Stage2'' has a 75.3\% disease rate.  Senior + CholHigh combined: 68.0\%.\\
+    \textit{Action:} Create ``High Alert'' protocol for patients matching the top multi-factor combinations.
 \end{enumerate}
 
 % ============================================================================
@@ -313,7 +334,7 @@ Seven new features were created based on medical domain knowledge:
 \hline
 Age\_Group & Categorizes patients (Young/Middle/Senior) per cardiac risk brackets \\
 BP\_Category & Blood pressure classification (Normal, High Stage 1, High Stage 2) \\
-Heart\_Risk\_Index & Composite score $= \text{age} \times \text{cholesterol} \times \text{resting\_bp} / 100{,}000$. Became the \textbf{\#1 predictor} in Random Forest (importance = 0.135) \\
+Heart\_Risk\_Index & Composite score $= \text{age} \times \text{cholesterol} \times \text{resting\_bp} / 100{,}000$. Captures synergistic cardiovascular risk (RF importance = 0.064) \\
 Cholesterol\_to\_Age\_Ratio & Cholesterol / Age -- relative cholesterol burden \\
 Age\_Chol\_Interaction & $\text{age} \times \text{cholesterol}$ -- captures synergistic risk \\
 Max\_HR\_Reserve & $220 - \text{age} - \text{max\_heart\_rate}$ -- cardiac fitness indicator \\
@@ -322,7 +343,7 @@ Cholesterol\_Risk\_Level & Binary flag: cholesterol $>$ 240 mg/dL \\
 \end{tabular}
 \end{table}
 
-\textbf{Feature selection:} All 20 features were retained for modeling. The engineered \texttt{Heart\_Risk\_Index} proved to be the single most predictive feature in Random Forest, validating the domain-driven approach. Both Random Forest and XGBoost importance rankings were used to confirm feature relevance (no redundant features identified).
+\textbf{Feature selection:} All 20 features were retained for modeling.  \texttt{ST slope} is the single most important feature in both Random Forest (0.147) and XGBoost (0.265), consistent with its known clinical significance.  Among the engineered features, \texttt{Heart\_Risk\_Index} (RF rank \#7, 0.064) and \texttt{Max\_HR\_Reserve} (RF rank \#6, 0.068) contribute meaningfully, validating the domain-driven approach.
 
 % ============================================================================
 % 7. MACHINE LEARNING MODELS
@@ -398,16 +419,16 @@ Cholesterol\_Risk\_Level & Binary flag: cholesterol $>$ 240 mg/dL \\
 \hline
 \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{ROC-AUC} \\
 \hline
-Logistic Regression & 0.8487 & 0.8629 & 0.8492 & 0.8560 & 0.9116 \\
-Random Forest (Initial) & 0.9244 & 0.9355 & 0.9206 & 0.9280 & 0.9653 \\
-XGBoost (Initial) & 0.9202 & 0.9421 & 0.9048 & 0.9231 & 0.9636 \\
-Random Forest (Tuned) & 0.9244 & 0.9355 & 0.9206 & 0.9280 & 0.9724 \\
-XGBoost (Tuned) & 0.9286 & 0.9504 & 0.9127 & 0.9312 & 0.9641 \\
+Logistic Regression & 0.8277 & 0.8455 & 0.8254 & 0.8353 & 0.9079 \\
+Random Forest (Initial) & 0.9118 & 0.9268 & 0.9048 & 0.9157 & 0.9688 \\
+XGBoost (Initial) & 0.9118 & 0.9487 & 0.8810 & 0.9136 & 0.9658 \\
+Random Forest (Tuned) & 0.9286 & 0.9504 & 0.9127 & 0.9312 & 0.9730 \\
+XGBoost (Tuned) & 0.9244 & 0.9500 & 0.9048 & 0.9268 & 0.9636 \\
 \hline
 \end{tabular}
 \end{table}
 
-\textbf{Best model by Recall:} Random Forest (Initial) with Recall = \textbf{0.9206} -- correctly identifies 92\% of actual heart disease cases.
+\textbf{Best model by Recall:} Random Forest (Tuned) with Recall = \textbf{0.9127} -- correctly identifies 91\% of actual heart disease cases.
 
 \subsection{Cross-Validation Results (5-Fold Stratified)}
 
@@ -418,9 +439,9 @@ XGBoost (Tuned) & 0.9286 & 0.9504 & 0.9127 & 0.9312 & 0.9641 \\
 \hline
 \textbf{Model} & \textbf{CV Accuracy} & \textbf{CV ROC-AUC} & \textbf{CV Recall} \\
 \hline
-Logistic Regression & 0.8277 $\pm$ 0.0182 & 0.9026 $\pm$ 0.0155 & 0.8271 $\pm$ 0.0320 \\
-Random Forest & 0.8971 $\pm$ 0.0323 & 0.9490 $\pm$ 0.0176 & 0.9126 $\pm$ 0.0449 \\
-XGBoost & 0.9023 $\pm$ 0.0217 & 0.9528 $\pm$ 0.0185 & 0.9126 $\pm$ 0.0416 \\
+Logistic Regression & 0.8246 $\pm$ 0.0278 & 0.9033 $\pm$ 0.0168 & 0.8212 $\pm$ 0.0397 \\
+Random Forest & 0.8918 $\pm$ 0.0203 & 0.9538 $\pm$ 0.0133 & 0.9026 $\pm$ 0.0402 \\
+XGBoost & 0.9055 $\pm$ 0.0239 & 0.9552 $\pm$ 0.0181 & 0.9206 $\pm$ 0.0400 \\
 \hline
 \end{tabular}
 \end{table}
@@ -436,9 +457,9 @@ Low standard deviation across all folds confirms robust generalization without o
 
 Confusion matrix analysis (test set):
 \begin{itemize}
-    \item Random Forest (Tuned): TN=104, FP=8, FN=10, TP=116
-    \item XGBoost (Tuned): TN=106, FP=6, FN=11, TP=115
-    \item Logistic Regression: TN=95, FP=17, FN=19, TP=107
+    \item Random Forest (Tuned): TN=106, FP=6, FN=11, TP=115
+    \item XGBoost (Tuned): TN=106, FP=6, FN=12, TP=114
+    \item Logistic Regression: TN=93, FP=19, FN=22, TP=104
 \end{itemize}
 
 \textbf{Recall is prioritized} to minimize missed diagnoses.
@@ -450,9 +471,9 @@ Threshold selection was performed using \textbf{out-of-fold (OOF) probabilities}
 By lowering the classification threshold from 0.5 to \textbf{0.05}:
 
 \begin{itemize}
-    \item Total expected cost drops from \$221,200 to \$26,400 (\textbf{88.1\% reduction})
-    \item Recall increases from 0.913 to \textbf{0.992} (catching 99.2\% of disease cases)
-    \item Precision decreases from 0.950 to 0.796 (acceptable trade-off for patient safety)
+    \item Total expected cost drops from \$241,200 to \$66,600 (\textbf{72.4\% reduction})
+    \item Recall increases from 0.905 to \textbf{0.976} (catching 97.6\% of disease cases)
+    \item Precision decreases from 0.950 to 0.789 (acceptable trade-off for patient safety)
 \end{itemize}
 
 \begin{figure}[H]
@@ -466,9 +487,9 @@ By lowering the classification threshold from 0.5 to \textbf{0.05}:
 
 Brier scores (lower = better calibration):
 \begin{itemize}
-    \item Logistic Regression: 0.1145
-    \item Random Forest (Tuned): 0.0698
-    \item XGBoost (Tuned): \textbf{0.0628} (best calibrated)
+    \item Logistic Regression: 0.1193
+    \item Random Forest (Tuned): 0.0701
+    \item XGBoost (Tuned): \textbf{0.0636} (best calibrated)
 \end{itemize}
 
 All scores $< 0.15$, indicating good calibration suitable for clinical probability communication.
@@ -494,11 +515,11 @@ All scores $< 0.15$, indicating good calibration suitable for clinical probabili
 \hline
 \textbf{Scale} & \textbf{Rows} & \textbf{Partitions} & \textbf{Pandas (s)} & \textbf{Dask (s)} & \textbf{Speedup} \\
 \hline
-1$\times$ & 1,190 & 1 & 0.013 & 0.172 & 0.08$\times$ \\
-10$\times$ & 11,900 & 2 & 0.017 & 0.273 & 0.06$\times$ \\
-50$\times$ & 59,500 & 10 & 0.028 & 0.477 & 0.06$\times$ \\
-100$\times$ & 119,000 & 20 & 0.043 & 0.908 & 0.05$\times$ \\
-500$\times$ & 595,000 & 100 & 0.194 & 3.663 & 0.05$\times$ \\
+1$\times$ & 1,190 & 1 & 0.017 & 0.197 & 0.09$\times$ \\
+10$\times$ & 11,900 & 2 & 0.018 & 0.290 & 0.06$\times$ \\
+50$\times$ & 59,500 & 10 & 0.037 & 0.612 & 0.06$\times$ \\
+100$\times$ & 119,000 & 20 & 0.051 & 1.495 & 0.03$\times$ \\
+500$\times$ & 595,000 & 100 & 0.197 & 4.111 & 0.05$\times$ \\
 \hline
 \end{tabular}
 \end{table}
@@ -534,16 +555,16 @@ Feature importance was extracted from both Random Forest and XGBoost models to e
 \hline
 \textbf{Rank} & \textbf{Feature (RF)} & \textbf{RF Score} & \textbf{Feature (XGB)} & \textbf{XGB Score} \\
 \hline
-1 & Heart\_Risk\_Index & 0.135 & ST slope & 0.250 \\
-2 & ST slope & 0.129 & chest pain type & 0.130 \\
-3 & chest pain type & 0.107 & exercise angina & 0.095 \\
-4 & oldpeak & 0.080 & sex & 0.070 \\
-5 & max heart rate & 0.072 & fasting blood sugar & 0.065 \\
-6 & Max\_HR\_Reserve & 0.065 & Heart\_Risk\_Index & 0.050 \\
-7 & Age\_Chol\_Interaction & 0.057 & BP\_Category\_High\_Stage2 & 0.040 \\
-8 & age & 0.052 & oldpeak & 0.038 \\
-9 & Cholesterol\_to\_Age\_Ratio & 0.051 & max heart rate & 0.035 \\
-10 & cholesterol & 0.048 & BP\_Category\_Normal & 0.030 \\
+1 & ST slope & 0.147 & ST slope & 0.265 \\
+2 & chest pain type & 0.108 & chest pain type & 0.150 \\
+3 & oldpeak & 0.091 & sex & 0.070 \\
+4 & exercise angina & 0.076 & exercise angina & 0.062 \\
+5 & max heart rate & 0.076 & BP\_Category\_High\_Stage2 & 0.059 \\
+6 & Max\_HR\_Reserve & 0.068 & fasting blood sugar & 0.055 \\
+7 & Heart\_Risk\_Index & 0.064 & oldpeak & 0.040 \\
+8 & Age\_Chol\_Interaction & 0.063 & BP\_Category\_Normal & 0.039 \\
+9 & age & 0.058 & Age\_Group\_Senior & 0.034 \\
+10 & Cholesterol\_to\_Age\_Ratio & 0.053 & Max\_HR\_Reserve & 0.029 \\
 \hline
 \end{tabular}
 \end{table}
@@ -551,9 +572,9 @@ Feature importance was extracted from both Random Forest and XGBoost models to e
 \subsection{Medical Interpretation}
 
 \begin{enumerate}
-    \item \textbf{ST slope:} ST segment changes during exercise ECG indicate myocardial ischemia. Both models rank it among the top 2 features.
-    \item \textbf{Chest pain type:} Typical angina strongly suggests coronary artery disease; asymptomatic type often indicates silent ischemia.
-    \item \textbf{Heart\_Risk\_Index (engineered):} Composite metric combining age, cholesterol, and blood pressure was the \#1 predictor in Random Forest, validating the domain-driven engineering approach.
+    \item \textbf{ST slope:} ST segment changes during exercise ECG indicate myocardial ischemia. Both models rank it as the \textbf{\#1 feature} (RF~0.147, XGB~0.265).
+    \item \textbf{Chest pain type:} Typical angina strongly suggests coronary artery disease; asymptomatic type often indicates silent ischemia.  Ranked \#2 in both models.
+    \item \textbf{Heart\_Risk\_Index (engineered):} Composite metric combining age, cholesterol, and blood pressure ranks \#7 in RF (0.064), contributing meaningfully alongside the original clinical features.
     \item \textbf{Max heart rate:} Chronotropic incompetence (lower-than-expected max HR) predicts cardiac mortality.
     \item \textbf{Exercise angina:} Exercise-induced chest pain indicates active ischemia and significant coronary stenosis.
 \end{enumerate}
@@ -569,16 +590,16 @@ Feature importance was extracted from both Random Forest and XGBoost models to e
     \item \textbf{Age-based risk:} Senior patients (60+) have a 69.1\% disease rate, 2.1$\times$ higher than young patients (32.6\%). Statistical validation: $\chi^2 = 57.92$, $p < 0.001$.\\
     $\rightarrow$ \textit{Action:} Mandatory annual cardiac screening for all patients aged 50+.
 
-    \item \textbf{Cholesterol impact:} High cholesterol ($>$240 mg/dL) patients show 61.3\% disease rate vs.\ 38.4\% for normal ($<$200 mg/dL). $t$-test: $p = 0.0014$, Cohen's $d = 0.22$.\\
-    $\rightarrow$ \textit{Action:} Initiate statin therapy discussion for patients with cholesterol $>$200.
+    \item \textbf{Cholesterol impact:} High cholesterol ($>$240 mg/dL) patients show 53.3\% disease rate vs.\ 52.5\% for normal ($\leq$240 mg/dL). The small difference indicates cholesterol alone is a weak discriminator; its value increases in combination with other risk factors.\\
+    $\rightarrow$ \textit{Action:} Initiate statin therapy discussion for patients with cholesterol $>$240; prioritize combined risk assessment.
 
     \item \textbf{Exercise angina as warning sign:} Patients with exercise angina have 83.1\% disease rate vs.\ 33.7\% without.\\
     $\rightarrow$ \textit{Action:} Fast-track cardiology referral for any patient reporting exercise-induced chest pain.
 
-    \item \textbf{Combined risk factors:} Senior + High Cholesterol + High BP (Stage 1) = \textbf{78.0\%} disease rate.\\
+    \item \textbf{Combined risk factors:} ``Senior + CholNormal + High\_Stage2'' = \textbf{75.3\%} disease rate.  Senior + High Cholesterol combined: 68.0\%.\\
     $\rightarrow$ \textit{Action:} Create ``High Alert'' protocol for patients with 3+ risk factors.
 
-    \item \textbf{Model effectiveness:} Best model achieves 92\% Recall with AUC = 0.97. Cost-optimized threshold catches 99.2\% of cases.\\
+    \item \textbf{Model effectiveness:} Best model achieves 91\% Recall with AUC = 0.97. Cost-optimized threshold catches 97.6\% of cases.\\
     $\rightarrow$ \textit{Action:} Deploy model for automated risk scoring in hospital EHR system.
 
     \item \textbf{Preventive opportunity:} Top predictors (ST slope, chest pain type) are obtainable in routine checkups.\\
@@ -607,9 +628,9 @@ Create a dedicated preventive care track for patients identified as high-risk by
 
 \subsection{Recommendation 3: Risk-Based Threshold Management}
 
-Deploy the model with an optimized threshold (0.05) that prioritizes patient safety. This cost-sensitive approach reduces total expected healthcare costs by 88.1\% while catching 99.2\% of disease cases.
+Deploy the model with an optimized threshold (0.05) that prioritizes patient safety. This cost-sensitive approach reduces total expected healthcare costs by 72.4\% while catching 97.6\% of disease cases.
 
-\textbf{Expected outcome:} Annual cost reduction from \$221,200 to \$26,400 per 238 patients screened.
+\textbf{Expected outcome:} Annual cost reduction from \$241,200 to \$66,600 per 238 patients screened.
 
 \subsection{Recommendation 4: Continuous Model Monitoring}
 
@@ -641,7 +662,7 @@ Average emergency treatment cost & \$20,000 \\
 Preventive screening cost per patient & \$500 \\
 Annual patients screened & 10,000 \\
 Heart disease prevalence & 52.86\% \\
-Model detection rate (Recall) & 92.06\% \\
+Model detection rate (Recall) & 91.27\% \\
 Prevention rate for detected cases & 30\% \\
 System implementation cost & \$150,000 \\
 Annual maintenance cost & \$30,000 \\
@@ -659,17 +680,17 @@ Annual maintenance cost & \$30,000 \\
 \textbf{Metric} & \textbf{Value} \\
 \hline
 Expected heart disease cases & 5,286 \\
-Cases detected by model & 4,866 \\
-Emergency cases prevented & 1,460 \\
+Cases detected by model & 4,824 \\
+Emergency cases prevented & 1,447 \\
 \hline
 Cost WITHOUT system & \$105,714,286 \\
-Cost WITH system & \$81,548,114 \\
+Cost WITH system & \$81,798,657 \\
 \hline
-\textbf{Annual Savings} & \textbf{\$24,166,171} \\
-Year 1 Net Savings & \$24,016,171 \\
+\textbf{Annual Savings} & \textbf{\$23,915,629} \\
+Year 1 Net Savings & \$23,765,629 \\
 Payback Period & 0.1 months \\
-ROI (Year 1) & 16,011\% \\
-ROI (Year 2+) & 80,554\% \\
+ROI (Year 1) & 15,844\% \\
+ROI (Year 2+) & 79,719\% \\
 \hline
 \end{tabular}
 \end{table}
@@ -683,11 +704,11 @@ ROI (Year 2+) & 80,554\% \\
 \hline
 \textbf{Year} & \textbf{Cumulative Net Savings} \\
 \hline
-Year 1 & \$24,016,171 \\
-Year 2 & \$48,182,343 \\
-Year 3 & \$72,348,514 \\
-Year 4 & \$96,514,686 \\
-Year 5 & \$120,680,857 \\
+Year 1 & \$23,765,629 \\
+Year 2 & \$47,681,257 \\
+Year 3 & \$71,596,886 \\
+Year 4 & \$95,512,514 \\
+Year 5 & \$119,428,143 \\
 \hline
 \end{tabular}
 \end{table}
@@ -722,7 +743,7 @@ Best Case & \$67,380,000 & 37,434\% & 20K patients, 40\% prevention \\
 
 \begin{itemize}
     \item The \$20,000 per-case emergency cost and 30\% prevention rate are literature-derived estimates; actual values vary by institution and geography.
-    \item The model's Recall (92.06\%) was measured on 238 test samples; real-world performance may differ due to population drift.
+    \item The model's Recall (91.27\%) was measured on 238 test samples; real-world performance may differ due to population drift.
     \item Screening costs (\$500/patient) assume existing clinical infrastructure; greenfield deployments may cost more.
     \item The analysis does not account for indirect costs (liability, patient quality-adjusted life years) or revenue from value-based contracts.
     \item All scenarios assume static prevalence; seasonal and demographic shifts could alter projections.
@@ -741,7 +762,6 @@ Best Case & \$67,380,000 & 37,434\% & 20K patients, 40\% prevention \\
     \item \textbf{Potential selection bias:} Combined dataset from Cleveland, Hungary, and Statlog may have geographic/demographic biases.
     \item \textbf{Missing clinical variables:} BMI, smoking history, family history, medication data are not available but clinically relevant.
     \item \textbf{Dask overhead:} For datasets under 100K rows, Dask is slower than Pandas due to scheduling overhead; benefits emerge at larger scales.
-    \item \textbf{SHAP local interpretability:} The current project scope focuses on Global Explainability through feature importance rankings aggregated across the full test set; implementation of SHAP for per-patient Local Interpretation will be addressed in the next project phase.
 \end{enumerate}
 
 \subsection{Future Work}
@@ -788,9 +808,9 @@ This project successfully developed a scalable heart disease prediction system u
 
     \item \textbf{Leak-free ML pipeline:} A stratified 80/20 split is performed on raw data before any parameter estimation. A single scikit-learn \texttt{Pipeline} then applies five ordered steps exclusively fitted on the training fold: (i)~\texttt{CholesterolFixer} replaces biologically impossible zero values (domain rule, no trained parameters); (ii)~\texttt{DataFrameImputer} fills remaining NaNs with training-set medians; (iii)~\texttt{DataFrameWinsorizer} clips values at training-set 1st/99th percentiles; (iv)~\texttt{FeatureEngineer} creates seven rule-based features (Report Table~3); and (v)~a \texttt{ColumnTransformer} applies \texttt{StandardScaler} to 16 numeric features (11 original + 5 engineered, including binary \texttt{Cholesterol\_Risk\_Level}) and \texttt{OneHotEncoder} (\texttt{drop=`first'}) to the two categorical features (\texttt{Age\_Group}, \texttt{BP\_Category}), yielding exactly \textbf{20 output features} ($16 + 4$ dummies). All CV folds and hyperparameter search iterations instantiate a fresh copy of this Pipeline via \texttt{make\_pipeline()}, re-fitting every learned parameter on the training fold only. Threshold selection uses out-of-fold probabilities (\texttt{cross\_val\_predict}) on the training set, with no test-set information used at any stage.
 
-    \item \textbf{Strong performance:} Random Forest achieves Accuracy = 0.9244, Recall = 0.9206, AUC = 0.9653. Cost-optimized threshold (OOF-selected, $t = 0.05$) raises Recall to 0.992 with 88.1\% cost reduction.
+    \item \textbf{Strong performance:} Random Forest (Tuned) achieves Accuracy = 0.9286, Recall = 0.9127, AUC = 0.9730. Cost-optimized threshold (OOF-selected, $t = 0.05$) raises Recall to 0.976 with 72.4\% cost reduction.
 
-    \item \textbf{Business value:} \$24.2M projected annual savings, 0.1-month payback period, positive ROI across all scenarios (worst case: 1,550\%).
+    \item \textbf{Business value:} \$23.9M projected annual savings, 0.1-month payback period, positive ROI across all scenarios (worst case: 1,550\%).
 
     \item \textbf{Explainability:} Feature importance analysis from both RF and XGBoost identifies clinically actionable predictors obtainable from routine checkups.
 \end{enumerate}
@@ -800,7 +820,7 @@ This project successfully developed a scalable heart disease prediction system u
 \fbox{\parbox{0.8\textwidth}{
 \centering
 \textbf{RECOMMENDATION: APPROVE SYSTEM DEPLOYMENT}\\[0.3cm]
-The predictive screening system delivers high detection rates (92\% Recall), substantial cost savings (\$24M/year), and scalable architecture ready for enterprise healthcare deployment.
+The predictive screening system delivers high detection rates (91\% Recall), substantial cost savings (\$23.9M/year), and scalable architecture ready for enterprise healthcare deployment.
 }}
 \end{center}
 
