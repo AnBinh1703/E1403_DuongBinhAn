@@ -135,6 +135,8 @@ Build a scalable machine learning system to predict heart disease risk using cli
 
 \begin{itemize}
     \item \textbf{Source:} Kaggle -- Heart Disease Dataset (combined from Cleveland, Hungary, and Statlog datasets)
+    \item \textbf{Source Link:} \url{https://www.kaggle.com/datasets/mexwell/heart-disease-dataset}
+    \item \textbf{License/Permission:} Educational use under Kaggle dataset terms; no direct patient identifiers are included.
     \item \textbf{File:} \texttt{heart\_statlog\_cleveland\_hungary\_final.csv} + \texttt{.jsonl}
     \item \textbf{Size:} 1,190 patient records, 12 clinical features
     \item \textbf{Characteristics:}
@@ -182,6 +184,7 @@ Two loading approaches were implemented to demonstrate Big Data concepts:
 \begin{itemize}
     \item \textbf{Pandas (baseline):} Traditional single-threaded, in-memory loading.
     \item \textbf{Dask DataFrame (Big Data):} Parallel, lazy-evaluation distributed loading. Handles datasets larger than RAM through automatic partitioning.
+    \item \textbf{Dask Config (recorded):} \texttt{n\_workers=4}, \texttt{threads\_per\_worker=2}, \texttt{memory\_limit=4GB}, \texttt{cpu\_cores=8} (see \texttt{configs/dask\_config.yml}).
 \end{itemize}
 
 \subsection{Schema Summary}
@@ -539,6 +542,20 @@ All scores $< 0.15$, indicating good calibration suitable for clinical probabili
 \label{fig:benchmark}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{benchmark_resources.png}
+\caption{Resource Monitoring During Benchmark (CPU\% and Memory\%)}
+\label{fig:benchmark_resources}
+\end{figure}
+
+\textbf{Logs and machine-readable outputs:}
+\begin{itemize}
+    \item Runtime/resource log: \texttt{outputs/logs/benchmarks.log}
+    \item Benchmark JSON: \texttt{outputs/benchmark\_results.json}
+    \item Outputs manifest JSON: \texttt{outputs/outputs\_manifest.json}
+\end{itemize}
+
 % ============================================================================
 % 10. EXPLAINABILITY
 % ============================================================================
@@ -659,6 +676,15 @@ Heart\_Risk\_Index & 0.104 & 0.086 & Composite metric; multivariate indicator \\
 \hline
 \end{tabular}
 \end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{shap_summary.png}
+\caption{Global SHAP Summary Plot (200 Test Samples)}
+\label{fig:shap_summary}
+\end{figure}
+
+\textbf{Local SHAP cases exported:} \texttt{shap\_waterfall\_0.png}, \texttt{shap\_waterfall\_1.png}, \texttt{shap\_waterfall\_2.png}. Runtime metadata is recorded in \texttt{outputs/logs/shap\_runtime.json} and \texttt{outputs/tables/shap\_runtime.csv}.
 
 \subsubsection{Clinical Interpretation Examples}
 
@@ -937,6 +963,9 @@ A comprehensive governance framework was designed for production deployment:
     \item \textbf{Retraining Schedule:} Scheduled every 6 months; triggered earlier if AUC drops $>$3\% or KS statistic $>$ 0.1.
     \item \textbf{KPI Monitoring:} AUC-ROC $\geq$ 0.90, prediction latency $<$ 100ms, false negative rate $<$ 12\%.
     \item \textbf{Data Security:} PHI/PII encryption (AES-256), RBAC, HIPAA compliance, audit logging.
+    \item \textbf{Fairness Monitoring:} Subgroup metrics exported to \texttt{outputs/tables/fairness\_subgroup\_metrics.csv} and \texttt{.json} for periodic parity review across sex/chest-pain/ST-slope groups.
+    \item \textbf{Reproducibility Stack:} Root \texttt{requirements.txt}, \texttt{Dockerfile}, \texttt{docker-compose.yml}, and scripted pipeline (\texttt{scripts/run\_all.ps1}, \texttt{scripts/run\_all.sh}).
+    \item \textbf{Model Registry Artifacts:} Serialized models in \texttt{outputs/models/logistic.joblib} and \texttt{outputs/models/random\_forest.joblib} with export summary CSV.
 \end{enumerate}
 
 \begin{figure}[H]

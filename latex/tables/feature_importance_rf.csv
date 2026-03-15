@@ -1,0 +1,21 @@
+Feature,Importance
+ST slope,0.1465
+chest pain type,0.1082
+oldpeak,0.091
+exercise angina,0.0764
+max heart rate,0.0755
+Max_HR_Reserve,0.0678
+Heart_Risk_Index,0.0644
+Age_Chol_Interaction,0.0631
+age,0.0579
+Cholesterol_to_Age_Ratio,0.0529
+cholesterol,0.0486
+resting bp s,0.0461
+sex,0.038
+fasting blood sugar,0.0181
+resting ecg,0.0161
+Cholesterol_Risk_Level,0.0073
+BP_Category_High_Stage2,0.0073
+BP_Category_Normal,0.0068
+Age_Group_Senior,0.0055
+Age_Group_Young,0.0025
