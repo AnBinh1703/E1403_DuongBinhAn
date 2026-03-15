@@ -1,0 +1,16 @@
+dask:
+  distributed:
+    scheduler:
+      work-stealing: true
+    worker:
+      threads: 2
+      memory:
+        target: 0.75
+        spill: 0.85
+        pause: 0.95
+        terminate: 0.98
+cluster:
+  n_workers: 4
+  threads_per_worker: 2
+  memory_limit: 4GB
+  cpu_cores: 8
