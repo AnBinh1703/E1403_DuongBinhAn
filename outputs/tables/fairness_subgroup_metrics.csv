@@ -1,0 +1,11 @@
+group_feature,group_value,n,accuracy,precision,recall
+sex,0,281,0.8221,0.7273,0.4571
+sex,1,909,0.6403,0.8766,0.483
+chest pain type,1,66,0.5606,0.4091,0.36
+chest pain type,2,216,0.8657,0.6,0.1935
+chest pain type,3,283,0.7774,0.7288,0.4778
+chest pain type,4,625,0.5904,0.9349,0.5052
+ST slope,0,1,0.0,0.0,0.0
+ST slope,1,526,0.8213,0.6905,0.2636
+ST slope,2,582,0.5567,0.9004,0.4924
+ST slope,3,81,0.7037,0.7966,0.7966

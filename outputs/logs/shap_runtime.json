@@ -1,0 +1,10 @@
+{
+  "rows_explained": 200,
+  "runtime_seconds": 2.6871,
+  "summary_plot": "shap_summary.png",
+  "local_plots": [
+    "shap_waterfall_0.png",
+    "shap_waterfall_1.png",
+    "shap_waterfall_2.png"
+  ]
+}

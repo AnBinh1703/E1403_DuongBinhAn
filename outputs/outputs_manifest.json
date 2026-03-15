@@ -1,0 +1,173 @@
+{
+  "generated_at": "2026-03-15T04:29:35.653073Z",
+  "files": [
+    {
+      "path": "outputs/benchmark_results.csv",
+      "size_bytes": 333
+    },
+    {
+      "path": "outputs/benchmark_results.json",
+      "size_bytes": 892
+    },
+    {
+      "path": "outputs/cv_results.csv",
+      "size_bytes": 374
+    },
+    {
+      "path": "outputs/feature_importance_rf.csv",
+      "size_bytes": 484
+    },
+    {
+      "path": "outputs/figures/architecture_pipeline.png",
+      "size_bytes": 341613
+    },
+    {
+      "path": "outputs/figures/benchmark_pandas_vs_dask.png",
+      "size_bytes": 55193
+    },
+    {
+      "path": "outputs/figures/benchmark_resources.png",
+      "size_bytes": 56771
+    },
+    {
+      "path": "outputs/figures/correlation_heatmap_lower.png",
+      "size_bytes": 556703
+    },
+    {
+      "path": "outputs/figures/correlation_matrix_square.png",
+      "size_bytes": 734846
+    },
+    {
+      "path": "outputs/figures/cost_threshold_curve.png",
+      "size_bytes": 403889
+    },
+    {
+      "path": "outputs/figures/model_calibration_curve.png",
+      "size_bytes": 368111
+    },
+    {
+      "path": "outputs/figures/model_drift_monitoring.png",
+      "size_bytes": 242432
+    },
+    {
+      "path": "outputs/figures/scenario_savings.png",
+      "size_bytes": 188326
+    },
+    {
+      "path": "outputs/figures/shap_summary.png",
+      "size_bytes": 156911
+    },
+    {
+      "path": "outputs/figures/shap_waterfall_0.png",
+      "size_bytes": 94584
+    },
+    {
+      "path": "outputs/figures/shap_waterfall_1.png",
+      "size_bytes": 94727
+    },
+    {
+      "path": "outputs/figures/shap_waterfall_2.png",
+      "size_bytes": 93657
+    },
+    {
+      "path": "outputs/figures/target_correlations_analysis.png",
+      "size_bytes": 289302
+    },
+    {
+      "path": "outputs/figures/velocity_microbatch_demo.png",
+      "size_bytes": 229730
+    },
+    {
+      "path": "outputs/logs/benchmarks.log",
+      "size_bytes": 1182
+    },
+    {
+      "path": "outputs/logs/shap_runtime.json",
+      "size_bytes": 210
+    },
+    {
+      "path": "outputs/model_metrics.csv",
+      "size_bytes": 213
+    },
+    {
+      "path": "outputs/models/logistic.joblib",
+      "size_bytes": 3882
+    },
+    {
+      "path": "outputs/models/model_export_summary.csv",
+      "size_bytes": 100
+    },
+    {
+      "path": "outputs/models/random_forest.joblib",
+      "size_bytes": 6234427
+    },
+    {
+      "path": "outputs/tables/benchmark_results.csv",
+      "size_bytes": 333
+    },
+    {
+      "path": "outputs/tables/correlation_matrix.csv",
+      "size_bytes": 2992
+    },
+    {
+      "path": "outputs/tables/correlation_matrix.tex",
+      "size_bytes": 2121
+    },
+    {
+      "path": "outputs/tables/cv_results.csv",
+      "size_bytes": 374
+    },
+    {
+      "path": "outputs/tables/fairness_subgroup_metrics.csv",
+      "size_bytes": 424
+    },
+    {
+      "path": "outputs/tables/fairness_subgroup_metrics.json",
+      "size_bytes": 1421
+    },
+    {
+      "path": "outputs/tables/feature_importance_rf.csv",
+      "size_bytes": 484
+    },
+    {
+      "path": "outputs/tables/model_metrics.csv",
+      "size_bytes": 213
+    },
+    {
+      "path": "outputs/tables/monitoring_kpis.tex",
+      "size_bytes": 740
+    },
+    {
+      "path": "outputs/tables/retraining_schedule.tex",
+      "size_bytes": 620
+    },
+    {
+      "path": "outputs/tables/scenario_cost_benefit.tex",
+      "size_bytes": 415
+    },
+    {
+      "path": "outputs/tables/shap_runtime.csv",
+      "size_bytes": 161
+    },
+    {
+      "path": "outputs/tables/stat_tests.tex",
+      "size_bytes": 766
+    },
+    {
+      "path": "outputs/tables/threshold_results.csv",
+      "size_bytes": 960
+    },
+    {
+      "path": "outputs/tables/tuning_comparison.csv",
+      "size_bytes": 234
+    },
+    {
+      "path": "outputs/threshold_results.csv",
+      "size_bytes": 960
+    },
+    {
+      "path": "outputs/tuning_comparison.csv",
+      "size_bytes": 234
+    }
+  ]
+}

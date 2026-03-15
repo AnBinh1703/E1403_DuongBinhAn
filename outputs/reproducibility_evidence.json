@@ -1,0 +1,96 @@
+{
+  "generated_at": "2026-03-15T04:40:12.136831+00:00",
+  "total_artifacts": 11,
+  "available_artifacts": 11,
+  "missing_artifacts": 0,
+  "items": [
+    {
+      "artifact": "Benchmark log",
+      "path": "outputs/logs/benchmarks.log",
+      "status": "AVAILABLE",
+      "size_bytes": 1182,
+      "last_modified": "2026-03-15T04:26:17.861574411",
+      "sha256": "4d3697cd075b85c064e62906d82ead7bc9b4c19a5404a119340f4795a730c5fb"
+    },
+    {
+      "artifact": "Benchmark results (CSV)",
+      "path": "outputs/benchmark_results.csv",
+      "status": "AVAILABLE",
+      "size_bytes": 333,
+      "last_modified": "2026-03-15T04:26:16.469625473",
+      "sha256": "d33a1274f14197233db3c9265f7712318fa03408daecce7f5336a9ec4e211a24"
+    },
+    {
+      "artifact": "Benchmark results (JSON)",
+      "path": "outputs/benchmark_results.json",
+      "status": "AVAILABLE",
+      "size_bytes": 892,
+      "last_modified": "2026-03-15T04:26:16.479217291",
+      "sha256": "e2b06b2bc6a37962ef4280da10127fb98a104315454c7644d3838b61185cb806"
+    },
+    {
+      "artifact": "Dask config",
+      "path": "configs/dask_config.yml",
+      "status": "AVAILABLE",
+      "size_bytes": 289,
+      "last_modified": "2026-03-15T04:25:27.879709244",
+      "sha256": "3835a0c3d1a6d98241e6968fd268423eeb94727bc4e3d7b172b6731af0fd7453"
+    },
+    {
+      "artifact": "Fairness metrics (CSV)",
+      "path": "outputs/tables/fairness_subgroup_metrics.csv",
+      "status": "AVAILABLE",
+      "size_bytes": 424,
+      "last_modified": "2026-03-15T04:26:27.214300871",
+      "sha256": "cf94480b6ac31bf37eddfeb4cac653f2dbcf57965bfaeb6571efd58483535987"
+    },
+    {
+      "artifact": "Fairness metrics (JSON)",
+      "path": "outputs/tables/fairness_subgroup_metrics.json",
+      "status": "AVAILABLE",
+      "size_bytes": 1421,
+      "last_modified": "2026-03-15T04:26:27.214300871",
+      "sha256": "2d27cb4b3005eda1e22dce1250abaee766449bd1d29f5714192fec1bcef3a928"
+    },
+    {
+      "artifact": "Model artifact: Logistic",
+      "path": "outputs/models/logistic.joblib",
+      "status": "AVAILABLE",
+      "size_bytes": 3882,
+      "last_modified": "2026-03-15T04:26:24.587830782",
+      "sha256": "d8d9b94d1cec3798c64e090cf8bcfb6cc52102010e72a63fa5a365bca8702f85"
+    },
+    {
+      "artifact": "Model artifact: Random Forest",
+      "path": "outputs/models/random_forest.joblib",
+      "status": "AVAILABLE",
+      "size_bytes": 6234427,
+      "last_modified": "2026-03-15T04:26:25.107728720",
+      "sha256": "4ac5a3d950a9bfb3247e0d35c816795be973aa129b5e0decccfae8b5962bf3ac"
+    },
+    {
+      "artifact": "Output manifest",
+      "path": "outputs/outputs_manifest.json",
+      "status": "AVAILABLE",
+      "size_bytes": 4108,
+      "last_modified": "2026-03-15T04:29:35.651418924",
+      "sha256": "4ff95fe2bb29a5114724ebb05d9b3127028d05a3b7864c17db61678dd8ec29fc"
+    },
+    {
+      "artifact": "SHAP runtime metadata",
+      "path": "outputs/logs/shap_runtime.json",
+      "status": "AVAILABLE",
+      "size_bytes": 210,
+      "last_modified": "2026-03-15T04:29:17.830021143",
+      "sha256": "81e71faaf8791c0063c760e9e6f029a44126460016abf45cfe32ed35020e3174"
+    },
+    {
+      "artifact": "SHAP summary figure",
+      "path": "outputs/figures/shap_summary.png",
+      "status": "AVAILABLE",
+      "size_bytes": 156911,
+      "last_modified": "2026-03-15T04:29:16.023111820",
+      "sha256": "ee314b03318434ff0bc087d4ba3b9426c801b1192de222ab8a8bad1d31a1e59c"
+    }
+  ]
+}
