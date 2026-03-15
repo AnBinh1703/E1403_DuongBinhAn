@@ -1,0 +1,133 @@
+- **Phase 1:** Áp dụng cho nhóm bệnh nhân nguy cơ cao.
+- **Phase 2:** Mở rộng cho toàn bộ dự đoán trong quy trình sàng lọc.
+- **Phase 3:** Tích hợp giao diện giải thích cho trao đổi bác sĩ–bệnh nhân.
+- **Phase 4:** Đánh giá định kỳ tác động tới hiệu quả can thiệp và vận hành.
+- Đánh giá hiệu năng, calibration, và tác động chi phí để hỗ trợ quyết định triển khai.
+- Bổ sung SHAP, fairness và bộ minh chứng tái lập phục vụ chấm điểm học thuật.
+- Chi-square test confirms this difference is statistically significant (Chi² = 57.92, p < 0.001).
+- Danh mục artifact đầu ra quan trọng của dự án (mô hình, benchmark, fairness, SHAP, log).
+- Each partition processed independently → out-of-core capability.
+- Hoàn thiện pipeline tiền xử lý và huấn luyện theo quy trình chống rò rỉ dữ liệu.
+- Model **Recall ≥ 85%** (minimize missed diagnoses)
+- Rather than removing outliers (which would lose valuable patient data), **winsorization** was applied — capping extreme values at the 1st/99th percentiles. This is the preferred approach in medical data where extreme values may represent real clinical conditions.
+- So sánh nhiều mô hình và chọn phương án phù hợp mục tiêu phát hiện sớm.
+- Tệp tổng hợp evidence xuất ra `outputs/tables/reproducibility_evidence.csv` và `outputs/reproducibility_evidence.json` để đính kèm báo cáo.
+- Thông tin kiểm chứng tệp: kích thước, thời gian cập nhật gần nhất, và mã băm SHA-256.
+- Trạng thái tồn tại của từng artifact trong thư mục dự án.
+"Cliff's δ": f"{cliff:.3f}"
+"Mean ✓": mean_ok,
+#    2 categorical: Age_Group, BP_Category  →  OHE drop='first'  →  4 dummies
+#   = age × cholesterol × resting_bp / 100,000
+#   ──────────────────────────────────────────────────────────────────────
+# (medians, percentile bounds, scaler μ/σ, encoder categories) will be
+# 1. Age_Group — 3 categorical levels
+# 16. MINH CHỨNG TÁI LẬP: EVIDENCE REGISTRY (REPORT-READY)
+# 2. BP_Category — 3 categorical levels (Normal / High_Stage1 / High_Stage2)
+# 3. Heart_Risk_Index = age × cholesterol × resting_bp / 100,000
+# 4.1 MISSING VALUE HANDLING  ── EDA / Exploration copy
+# 7. Cholesterol_Risk_Level — binary numeric flag (0 / 1); no OHE needed
+# ── A) Pandas CSV ────────────────────────────────────────────────────────────
+# ── B) Write JSONL (if not already there) & reload ──────────────────────────
+# ── Backward-compat aliases (used by all downstream modeling cells) ───────
+# ── C) Dask lazy load ────────────────────────────────────────────────────────
+# ── Read back with Dask glob ──────────────────────────────────────────────────
+# ── Schema consistency check ─────────────────────────────────────────────────
+# ── Write shards ─────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────────────
+# back with Dask's glob pattern — identical to prod workflows.
+# CELL 10.2 — Concise actionable insights table
+# CELL 3.1 — DATA INGESTION: CSV (pandas) + JSONL (pandas) + Dask lazy load
+# CELL 3.2 — PARTITION-BASED I/O DEMO  (simulates Big Data distributed storage)
+# Cholesterol_Risk_Level is binary (0/1) → treated as numerical
+# Cholesterol_Risk_Level is now binary (0 = Normal ≤240, 1 = High >240)
+# Feature 2: Cholesterol Risk Level  → BINARY FLAG (cholesterol > 240)
+# Feature 3: Blood Pressure Category (3 levels – matching Report Table 3)
+# Feature 6: Age × Cholesterol Interaction
+# scaler μ/σ, encoder categories) is re-done INSIDE a Pipeline fitted
+# Scaling benchmark — Dask reads partition files from disk
+# to Pipeline.fit() — the Pipeline handles all transforms internally.
+# y_train / y_test).  No second train_test_split call — avoids confusion.
+## 16. Minh chứng tái lập kết quả và đăng ký hiện vật (Evidence Registry)
+## Kết quả chính
+## Khuyến nghị triển khai
+## Tóm tắt kết quả
+### Kế hoạch triển khai SHAP (rút gọn)
+**Business Question 1 — Age Group Risk:**
+**Business Question 2 — Cholesterol Impact:**
+**Business Question 3 — Feature Combinations:**
+*Final Project – Big Data Analytics Course*
+_engineered_categorical = ['Age_Group', 'BP_Category']              # 2  → 4 dummies
+{"Area": "Bias", "Current limitation": "Nguy cơ thiên lệch theo nguồn thu thập", "Improvement direction": "Theo dõi fairness định kỳ theo nhóm"},
+{"Area": "Data", "Current limitation": "Dataset size còn hạn chế (~1,200 bản ghi)", "Improvement direction": "Mở rộng dữ liệu đa bệnh viện, đa vùng"},
+{"Area": "Features", "Current limitation": "Thiếu một số yếu tố lâm sàng quan trọng", "Improvement direction": "Bổ sung BMI, smoking, family history, medication"},
+{"Area": "Temporal", "Current limitation": "Thiếu dữ liệu theo chuỗi thời gian", "Improvement direction": "Bổ sung dữ liệu theo dõi dọc và time-to-event"},
+{"Phase": "P1 (0-6 tháng)", "Focus": "Mở rộng dữ liệu + chuẩn hóa chất lượng"},
+{"Phase": "P2 (6-12 tháng)", "Focus": "Nâng cấp mô hình + đánh giá bất định"},
+{"Phase": "P3 (12-18 tháng)", "Focus": "Tích hợp thời gian thực + cảnh báo"},
+{"Phase": "P4 (liên tục)", "Focus": "Giám sát drift + retraining governance"},
+| **Heart_Risk_Index** | Composite score (age × cholesterol × resting_bp / 100,000) combining multiple risk factors into a single metric, analogous to Framingham Risk Score. |
+1. **Heart_Risk_Index** (0.135) — The engineered composite feature is the strongest predictor, validating the domain-driven feature engineering approach.
+1. **IQR Method:** Identifies outliers outside Q1 - 1.5×IQR and Q3 + 1.5×IQR bounds
+2. **Cholesterol_Risk_Level:** Binary flag — cholesterol > 240 mg/dL (WHO high-risk threshold)
+2. **Lazy Evaluation:** Dask's deferred computation enables efficient memory usage — crucial when processing EHR data that may exceed available RAM.
+2. **ST slope** (0.129) — ST segment changes during exercise ECG are a well-established indicator of myocardial ischemia.
+3. **BP_Category:** Blood pressure classification — Normal / High_Stage1 / High_Stage2
+3. **Chest pain type** (0.107) — The type and severity of chest pain strongly differentiates between cardiac and non-cardiac causes.
+4. **Heart_Risk_Index:** Composite score = age × cholesterol × resting_bp / 100,000
+4. **Oldpeak** (0.080) — ST depression magnitude quantifies the severity of ischemic burden during exercise.
+5. **Max heart rate** (0.072) — Chronotropic incompetence (inability to achieve expected max HR) predicts cardiac mortality.
+7. **Max_HR_Reserve:** Difference from age-predicted maximum heart rate (220 − age − max_heart_rate)
+• Dask reads them in parallel across workers
+• Each part_XXXX.csv = one HDFS block or S3 object
+• Lazy evaluation: graph built in milliseconds, compute deferred
+• Same dd.read_csv("s3://bucket/part_*.csv") works on any cloud
+Đánh giá ngắn gọn các hạn chế hiện tại và định hướng cải tiến trong các giai đoạn tiếp theo.
+assert abs(age_mean_shards - df_pandas['age'].mean()) < 1e-4, "Shard mean doesn't match pandas mean — data integrity issue!"
+assert len(feature_names) == 20, f"Expected 20 features, got {len(feature_names)} — check pipeline config!"
+'Chi²': f"{chi2:.2f}",
+chol_labels = {0: 'Normal (≤240)', 1: 'High (>240)'}
+chol_order = ['Normal (≤240)', 'High (>240)']
+Dự án xây dựng hệ thống dự đoán nguy cơ bệnh tim theo hướng Big Data, kết hợp xử lý dữ liệu phân tán, mô hình học máy, tối ưu ngưỡng theo chi phí và giải thích mô hình.
+Dưới đây là 6 khuyến nghị trọng tâm cho triển khai thực tế ở cấp quản trị.
+Kết nối chương trình dinh dưỡng–vận động cho nhóm có yếu tố nguy cơ có thể can thiệp.
+Mục tiêu là đảm bảo người chấm có thể xác nhận tính tái lập và tính truy vết của toàn bộ quy trình phân tích.
+mean_ok    = "—" if csv_mean is None else ("✓" if abs(csv_mean - json_mean) < 1e-6 else "MISMATCH")
+N_SHARDS = 10   # write 10 part files — representative of distributed storage
+Nội dung minh chứng gồm:
+Phần này trình bày minh chứng nộp bài theo dạng hồ sơ kỹ thuật, tập trung vào khả năng tái lập và truy vết.
+print("       StandardScaler + OneHotEncoder per fold → no data leakage.")
+print("  All numeric means identical across formats ✓")
+print("  Data integrity check ✓")
+print(" Sections 4.1–4.3 applied imputation, winsorization, and feature")
+print("\n  make_pipeline() helper defined — used by all CV / tuning calls.")
+print("\n Feature 4: Heart_Risk_Index = age × cholesterol × resting_bp / 100,000")
+print("\n[Schema / consistency check — CSV vs JSONL]")
+print("3.1  DATA INGESTION — CSV + JSONL + Dask")
+print("MINH CHỨNG TÁI LẬP (EVIDENCE REGISTRY)")
+print('✓ SHAP computation complete!')
+print(f"       OneHotEncoder   → {len(cat_names)} dummy columns (Age_Group ×2, BP_Category ×2)")
+print(f"       StandardScaler  → {len(num_names)} numeric features")
+print(f"  1. CholesterolFixer   : cholesterol==0 → NaN  (domain rule, no params)")
+print(f"  ──────────────────────────────────────────")
+print(f" - Chi² = {chi2_chol:.4f}, p = {p_chol:.6f}")
+print(f"  Shards already exist ({len(shard_paths)} files) — skipping write.")
+print(f"  were fitted on TRAINING DATA ONLY — zero leakage guaranteed.")
+print(f"  Wrote {written} shard files → {SHARDS_DIR}")
+print(f" Chi²: {chi2:.2f}, DoF: {dof}, P-value: {p_value:.6f}")
+print(f"\n  All medians, percentile bounds, scaler μ/σ, and encoder categories")
+print(f"\n[CSV — pandas.read_csv]")
+print(f"\n[JSONL — pd.read_json(lines=True)]")
+print(f"Artifacts còn thiếu        : {(evidence_df['status'] == 'MISSING').sum()}")
+print(f"Artifacts sẵn có           : {(evidence_df['status'] == 'AVAILABLE').sum()}")
+print(f"Tổng số artifacts theo dõi : {len(evidence_df)}")
+Sử dụng điểm rủi ro để tối ưu phối hợp với đơn vị bảo hiểm và ưu tiên nguồn lực điều trị.
+Tích hợp điểm rủi ro vào quy trình khám định kỳ để phát hiện sớm ca nguy cơ cao.
+Theo dõi drift, hiệu năng và tái huấn luyện định kỳ để duy trì chất lượng mô hình.
+Thiết kế luồng chăm sóc dự phòng riêng cho nhóm bệnh nhân rủi ro cao do mô hình xác định.
+training fold — never from the validation / test fold.
+Triển khai giải thích mức cá nhân trong dashboard lâm sàng để tăng niềm tin bác sĩ, hỗ trợ tuân thủ, và cải thiện quyết định điều trị theo từng bệnh nhân.
+Triển khai mô hình đã tinh chỉnh trong quy trình sàng lọc ban đầu, kết hợp giám sát drift định kỳ và cập nhật mô hình theo lịch governance.
+X_test  = X_test_raw    # raw DataFrame  → same Pipeline transform applied
+X_test  = X_test_raw    # raw DataFrame — same Pipeline transforms applied
+X_train = X_train_raw   # raw DataFrame  → Pipeline transforms per fold
+X_train = X_train_raw   # raw DataFrame — Pipeline transforms internally per fold

@@ -1,8 +1,8 @@
 artifact,path,status,size_bytes,last_modified,sha256
 Benchmark log,outputs/logs/benchmarks.log,AVAILABLE,1182,2026-03-15T04:26:17.861574411,4d3697cd075b85c064e62906d82ead7bc9b4c19a5404a119340f4795a730c5fb
-Benchmark results (CSV),outputs/benchmark_results.csv,AVAILABLE,333,2026-03-15T04:26:16.469625473,d33a1274f14197233db3c9265f7712318fa03408daecce7f5336a9ec4e211a24
+Benchmark results (CSV),outputs/benchmark_results.csv,AVAILABLE,232,2026-03-15T06:46:07.660381794,8fe0b5bce1db88aeb60684accccc9183f6e0cedb94e8b0e32f94a9359e0c1320
 Benchmark results (JSON),outputs/benchmark_results.json,AVAILABLE,892,2026-03-15T04:26:16.479217291,e2b06b2bc6a37962ef4280da10127fb98a104315454c7644d3838b61185cb806
-Dask config,configs/dask_config.yml,AVAILABLE,289,2026-03-15T04:25:27.879709244,3835a0c3d1a6d98241e6968fd268423eeb94727bc4e3d7b172b6731af0fd7453
+Dask config,configs/dask_config.yml,AVAILABLE,289,2026-03-15T05:00:06.174547911,3835a0c3d1a6d98241e6968fd268423eeb94727bc4e3d7b172b6731af0fd7453
 Fairness metrics (CSV),outputs/tables/fairness_subgroup_metrics.csv,AVAILABLE,424,2026-03-15T04:26:27.214300871,cf94480b6ac31bf37eddfeb4cac653f2dbcf57965bfaeb6571efd58483535987
 Fairness metrics (JSON),outputs/tables/fairness_subgroup_metrics.json,AVAILABLE,1421,2026-03-15T04:26:27.214300871,2d27cb4b3005eda1e22dce1250abaee766449bd1d29f5714192fec1bcef3a928
 Model artifact: Logistic,outputs/models/logistic.joblib,AVAILABLE,3882,2026-03-15T04:26:24.587830782,d8d9b94d1cec3798c64e090cf8bcfb6cc52102010e72a63fa5a365bca8702f85

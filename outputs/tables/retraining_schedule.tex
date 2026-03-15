@@ -5,11 +5,11 @@
 \toprule
 Trigger & Condition & Action & SLA \\
 \midrule
-Scheduled & Every 6 months & Full model retraining & T + 7 days \\
-Performance & AUC drops > 3% from baseline & Partial retune with recent data & T + 3 days \\
-Data Drift & KS statistic > 0.1 & Recalibrate + validation & T + 5 days \\
-Concept Drift & Feature importance shift > 20% & Architecture review + retrain & T + 14 days \\
-Emergency & Critical failure in production & Immediate rollback + investigation & T + 4 hours \\
+Scheduled & Every 6 months & Full retrain & T+7 days \\
+Performance drop & AUC drop >3% & Retune with recent data & T+3 days \\
+Data drift & KS > 0.10 & Recalibrate + validate & T+5 days \\
+Concept drift & Feature shift >20% & Architecture review + retrain & T+14 days \\
+Emergency & Critical production failure & Rollback + incident response & T+4 hours \\
 \bottomrule
 \end{tabular}
 \end{table}
